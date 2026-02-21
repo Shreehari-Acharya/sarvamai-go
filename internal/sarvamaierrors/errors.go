@@ -20,7 +20,6 @@ type DecodedAPIError struct {
 	Detail string `json:"detail"`
 }
 
-
 type ValidationError struct {
 	Field   string
 	Message string
