@@ -1,9 +1,5 @@
 package detect
 
-import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
-)
-
 type Request struct {
 	Input string `json:"input"`
 }
@@ -15,5 +11,5 @@ type Response struct {
 }
 
 func (r Request) Validate() error {
-	return languages.ValidateDetectLanguageInput(r.Input)
+	return validateDetectLanguageInput(r.Input)
 }
