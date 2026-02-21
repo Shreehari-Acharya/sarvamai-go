@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/errors"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 )
 
 type Transport struct {
@@ -64,7 +64,7 @@ func (t *Transport) DoRequest(
 	}()
 
 	if resp.StatusCode >= 400 {
-		return errors.ParseAPIError(resp)
+		return sarvamaierrors.ParseAPIError(resp)
 	}
 
 	if result != nil && resp.ContentLength != 0 {

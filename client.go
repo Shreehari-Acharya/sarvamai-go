@@ -10,7 +10,7 @@ import (
 type Client struct {
 	transport *transport.Transport
 
-	Text *text.Service
+	Text *text.Client
 }
 
 func NewSarvamAIClient(cfg Config) (*Client, error) {
@@ -38,7 +38,7 @@ func NewSarvamAIClient(cfg Config) (*Client, error) {
 		transport: t,
 	}
 
-	c.Text = text.NewService(t)
+	c.Text = text.NewClient(t)
 
 	return c, nil
 }
