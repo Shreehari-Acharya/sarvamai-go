@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
@@ -69,6 +70,69 @@ func (t *Transport) DoRequest(
 
 	if result != nil && resp.ContentLength != 0 {
 		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+			return fmt.Errorf("decode response: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func (t *Transport) DoMultipartRequest(
+	ctx context.Context,
+	path string,
+	fileFieldName string,
+	fileName string,
+	file io.Reader,
+	fields map[string]string,
+	result any,
+) error {
+
+	pr, pw := io.Pipe()
+	writer := multipart.NewWriter(pw)
+
+	go func() {
+		defer pw.Close()
+		defer writer.Close()
+
+		part, err := writer.CreateFormFile(fileFieldName, fileName)
+		if err != nil {
+			pw.CloseWithError(err)
+			return
+		}
+
+		if _, err := io.Copy(part, file); err != nil {
+			pw.CloseWithError(err)
+			return
+		}
+
+		for key, value := range fields {
+			if err := writer.WriteField(key, value); err != nil {
+				pw.CloseWithError(err)
+				return
+			}
+		}
+	}()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, t.BaseURL+path, pr)
+	if err != nil {
+		return fmt.Errorf("create multipart request: %w", err)
+	}
+
+	req.Header.Set("api-subscription-key", t.APIKey)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	resp, err := t.HTTPClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("execute multipart request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		return sarvamaierrors.ParseAPIError(resp)
+	}
+
+	if result != nil {
+		if err := json.NewDecoder(resp.Body).Decode(result); err != nil && err != io.EOF {
 			return fmt.Errorf("decode response: %w", err)
 		}
 	}

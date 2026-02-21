@@ -4,13 +4,15 @@ import (
 	"errors"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
 )
 
 type Client struct {
 	transport *transport.Transport
 
-	Text *text.Client
+	Text         *text.Client
+	SpeechToText *stt.Client
 }
 
 func NewSarvamAIClient(cfg Config) (*Client, error) {
@@ -39,6 +41,7 @@ func NewSarvamAIClient(cfg Config) (*Client, error) {
 	}
 
 	c.Text = text.NewClient(t)
+	c.SpeechToText = stt.NewClient(t)
 
 	return c, nil
 }
