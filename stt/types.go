@@ -1,3 +1,4 @@
+// Package stt provides types for Speech-to-Text API requests and responses.
 package stt
 
 import (
@@ -9,51 +10,15 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
-var (
-	saarikaLanguages = map[languages.Code]bool{
-		"unknown": true, // auto-detect
-		"hi-IN":   true, // Hindi
-		"bn-IN":   true, // Bengali
-		"kn-IN":   true, // Kannada
-		"ml-IN":   true, // Malayalam
-		"mr-IN":   true, // Marathi
-		"od-IN":   true, // Odia
-		"pa-IN":   true, // Punjabi
-		"ta-IN":   true, // Tamil
-		"te-IN":   true, // Telugu
-		"en-IN":   true, // English
-		"gu-IN":   true, // Gujarati
-	}
-
-	saarasLanguages = map[languages.Code]bool{
-		"unknown": true, // auto-detect
-		"hi-IN":   true, // Hindi
-		"bn-IN":   true, // Bengali
-		"kn-IN":   true, // Kannada
-		"ml-IN":   true, // Malayalam
-		"mr-IN":   true, // Marathi
-		"od-IN":   true, // Odia
-		"pa-IN":   true, // Punjabi
-		"ta-IN":   true, // Tamil
-		"te-IN":   true, // Telugu
-		"en-IN":   true, // English
-		"gu-IN":   true, // Gujarati
-
-		"as-IN":  true, // Assamese
-		"ur-IN":  true, // Urdu
-		"ne-IN":  true, // Nepali
-		"kok-IN": true, // Konkani
-		"ks-IN":  true, // Kashmiri
-		"sd-IN":  true, // Sindhi
-		"sa-IN":  true, // Sanskrit
-		"sat-IN": true, // Santali
-		"mni-IN": true, // Manipuri
-		"brx-IN": true, // Bodo
-		"mai-IN": true, // Maithili
-		"doi-IN": true, // Dogri
-	}
-)
-
+// Model specifies the speech recognition model to use.
+//
+//   - ModelSaarika: A multilingual speech recognition model (v2.5)
+//   - ModelSaaras: A language-specific model (v3)
+//
+// # Model Differences
+//
+//   - ModelSaarika: Best for multilingual audio, supports multiple modes
+//   - ModelSaaras: Optimized for specific languages, supports specific modes per language
 type Model string
 
 const (
@@ -61,6 +26,13 @@ const (
 	ModelSaaras  Model = "saaras:v3"
 )
 
+// Mode specifies the processing mode for speech recognition.
+//
+//   - ModeTranscribe: Standard transcription
+//   - ModeTranslate: Translate the transcribed text to English
+//   - ModeVerbatim: Preserve exact words including filler words
+//   - ModeTranslit: Transliterate to Roman script
+//   - ModeCodemix: Handle code-mixed audio (multiple languages)
 type Mode string
 
 const (
@@ -71,6 +43,8 @@ const (
 	ModeCodemix    Mode = "codemix"
 )
 
+// InputAudioCodec specifies the audio codec of the input file.
+// Supported codecs include: wav, mp3, aac, ogg, opus, flac, mp4, amr, webm, pcm formats.
 type InputAudioCodec string
 
 var (
@@ -102,6 +76,7 @@ var (
 	}
 )
 
+// Common audio codec constants for use in requests.
 const (
 	CodecWAV      InputAudioCodec = "wav"
 	CodecXWAV     InputAudioCodec = "x-wav"
@@ -129,6 +104,8 @@ const (
 	CodecPCMRAW   InputAudioCodec = "pcm_raw"
 )
 
+// StreamSampleRate specifies the sample rate for streaming audio.
+// Common sample rates for speech: 8000, 16000, 22050, 24000 Hz.
 type StreamSampleRate int
 
 const (
@@ -138,12 +115,19 @@ const (
 	SampleRate24000 StreamSampleRate = 24000
 )
 
+// StreamAudioEncoding specifies the audio encoding format for streaming.
 type StreamAudioEncoding string
 
 const (
 	EncodingWAV StreamAudioEncoding = "audio/wav"
 )
 
+// VADSensitivity specifies the Voice Activity Detection sensitivity.
+// Higher sensitivity detects quieter speech but may have more false positives.
+//
+//   - VADSensitivityHigh: Most sensitive, detects quiet speech
+//   - VADSensitivityMedium: Balanced sensitivity
+//   - VADSensitivityLow: Least sensitive, only clear speech
 type VADSensitivity string
 
 const (
@@ -152,6 +136,28 @@ const (
 	VADSensitivityLow    VADSensitivity = "low"
 )
 
+// TranscribeRequest represents a speech-to-text transcription request.
+//
+// # Required Fields
+//
+//   - File: Audio file reader
+//   - FileName: Name of the audio file (e.g., "audio.mp3")
+//
+// # Optional Fields
+//
+//   - Model: Speech recognition model (defaults to saarika:v2.5)
+//   - Mode: Processing mode (transcribe, translate, verbatim, translit, codemix)
+//   - Language: Language code for the audio
+//   - AudioCodec: Audio codec of the input file
+//
+// # Example
+//
+//	req := stt.TranscribeRequest{
+//	    File:     audioFile,
+//	    FileName: "recording.wav",
+//	    Model:    stt.ModelPtr(stt.ModelSaarika),
+//	    Mode:    stt.ModePtr(stt.ModeTranscribe),
+//	}
 type TranscribeRequest struct {
 	File     io.Reader
 	FileName string
@@ -162,6 +168,7 @@ type TranscribeRequest struct {
 	AudioCodec *InputAudioCodec
 }
 
+// Timestamps contains word-level timing information for the transcription.
 type Timestamps struct {
 	Words            []string  `json:"words"`
 	StartTimeSeconds []float64 `json:"start_time_seconds"`
@@ -169,6 +176,7 @@ type Timestamps struct {
 }
 
 // DiarizedTranscript represents speaker-separated transcription.
+// Each entry contains the transcript for a specific speaker.
 type DiarizedTranscript struct {
 	Entries []DiarizedEntry `json:"entries"`
 }
@@ -181,6 +189,16 @@ type DiarizedEntry struct {
 	SpeakerID        string  `json:"speaker_id"`
 }
 
+// TranscribeResponse represents a speech-to-text transcription response.
+//
+// # Fields
+//
+//   - RequestID: Unique identifier for the request
+//   - Transcript: The transcribed text
+//   - Timestamps: Word-level timing information (if requested)
+//   - DiarizedTranscript: Speaker-separated transcription (if speaker diarization enabled)
+//   - LanguageCode: Detected or specified language
+//   - LanguageProbability: Confidence of language detection
 type TranscribeResponse struct {
 	RequestID           *string             `json:"request_id"`
 	Transcript          string              `json:"transcript"`
@@ -190,6 +208,23 @@ type TranscribeResponse struct {
 	LanguageProbability *float64            `json:"language_probability"`
 }
 
+// StreamConfig holds configuration for streaming speech recognition.
+//
+// # Fields
+//
+//   - Language: Language code for recognition (use "auto" for auto-detection)
+//   - Model: Speech recognition model (saarika or saaras)
+//   - Mode: Processing mode
+//   - SampleRate: Audio sample rate (8000, 16000, 22050, or 24000)
+//   - HighVADSensitivity: Enable high VAD sensitivity
+//   - VADSignals: Receive voice activity detection signals
+//   - FlushSignal: Enable flush signals
+//   - InputAudioCodec: Audio codec of the input
+//
+// # Sample Rate Notes
+//
+// For streaming, use 16000 Hz for best compatibility with the API.
+// Other supported rates: 8000, 22050, 24000 Hz.
 type StreamConfig struct {
 	Language           *languages.Code
 	Model              *Model
@@ -201,6 +236,7 @@ type StreamConfig struct {
 	InputAudioCodec    *InputAudioCodec
 }
 
+// ResponseType indicates the type of streaming response.
 type ResponseType string
 
 const (
@@ -209,18 +245,21 @@ const (
 	TypeEvents ResponseType = "events"
 )
 
+// StreamResponse represents a response from the streaming API.
 type StreamResponse struct {
 	Type ResponseType    `json:"type"`
 	Data json.RawMessage `json:"data"`
 }
 
-func (r *StreamResponse) UnmarshalData(dest interface{}) error {
+// UnmarshalData deserializes the data field into the given destination.
+func (r *StreamResponse) UnmarshalData(dest any) error {
 	if r.Data == nil {
 		return nil
 	}
 	return json.Unmarshal(r.Data, dest)
 }
 
+// TranscriptionData contains the transcribed text and metadata from streaming.
 type TranscriptionData struct {
 	RequestID           string               `json:"request_id"`
 	Transcript          string               `json:"transcript"`
@@ -231,16 +270,19 @@ type TranscriptionData struct {
 	Metrics             TranscriptionMetrics `json:"metrics"`
 }
 
+// TranscriptionMetrics contains performance metrics for the transcription.
 type TranscriptionMetrics struct {
 	AudioDuration     float64 `json:"audio_duration"`
 	ProcessingLatency float64 `json:"processing_latency"`
 }
 
+// ErrorData contains error information from the streaming API.
 type ErrorData struct {
 	Error string `json:"error"`
 	Code  string `json:"code"`
 }
 
+// EventType indicates the type of voice activity detection event.
 type EventType string
 
 const (
@@ -248,6 +290,7 @@ const (
 	EventEndSpeech   EventType = "END_SPEECH"
 )
 
+// EventData contains voice activity detection event information.
 type EventData struct {
 	EventType  EventType `json:"event_type"`
 	Timestamp  string    `json:"timestamp"`
@@ -255,6 +298,9 @@ type EventData struct {
 	OccuredAt  float64   `json:"occured_at"`
 }
 
+// Stream represents a WebSocket connection for streaming speech recognition.
+// Use SendAudio to send audio data, Flush to finalize the current segment,
+// and Messages/Errors to receive responses.
 type Stream struct {
 	ws         *transport.WSConnection
 	messages   chan StreamResponse
@@ -262,6 +308,7 @@ type Stream struct {
 	done       chan struct{}
 	mu         sync.Mutex
 	transcript string
+	sampleRate StreamSampleRate
 }
 
 func (r *TranscribeRequest) Validate() error {

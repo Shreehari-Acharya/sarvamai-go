@@ -2,7 +2,6 @@ package transport
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"net/url"
 
@@ -38,8 +37,6 @@ func (t *Transport) DialWebSocket(
 	header.Set("Api-Subscription-Key", t.APIKey)
 
 	dialer := websocket.DefaultDialer
-	// debug statement with the full URL being dialed
-	fmt.Printf("Dialing WebSocket URL: %s\n", parsed.String())
 	conn, _, err := dialer.DialContext(ctx, parsed.String(), header)
 	if err != nil {
 		return nil, err

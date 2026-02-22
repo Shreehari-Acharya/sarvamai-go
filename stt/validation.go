@@ -19,12 +19,12 @@ type modelSpec struct {
 
 var modelRegistry = map[Model]modelSpec{
 	ModelSaarika: {
-		supportedLanguages: saarikaLanguages,
+		supportedLanguages: languages.SaarikaLanguages,
 		supportsMode:       false,
 		name:               "saarika:v2.5",
 	},
 	ModelSaaras: {
-		supportedLanguages: saarasLanguages,
+		supportedLanguages: languages.SaarasLanguages,
 		supportsMode:       true,
 		name:               "saaras:v3",
 	},
