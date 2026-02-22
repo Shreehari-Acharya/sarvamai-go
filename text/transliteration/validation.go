@@ -8,7 +8,7 @@ import (
 )
 
 func validateTransliterateSourceLanguage(lang languages.Code) error {
-	if !transliterateLanguages[lang] {
+	if !languages.TransliterateLanguages[lang] {
 		return &sarvamaierrors.ValidationError{
 			Field:   "source_language_code",
 			Message: fmt.Sprintf("%s is not supported for transliteration", lang),
@@ -18,7 +18,7 @@ func validateTransliterateSourceLanguage(lang languages.Code) error {
 }
 
 func validateTransliterateTargetLanguage(lang languages.Code) error {
-	if !transliterateLanguages[lang] {
+	if !languages.TransliterateLanguages[lang] {
 		return &sarvamaierrors.ValidationError{
 			Field:   "target_language_code",
 			Message: fmt.Sprintf("%s is not supported for transliteration", lang),
