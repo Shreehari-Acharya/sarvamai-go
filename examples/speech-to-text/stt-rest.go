@@ -7,13 +7,12 @@ import (
 	"os"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
 func main() {
 	ctx := context.Background()
 
-	client, err := sarvamai.NewSarvamAIClient(sarvamai.Config{
+	client, err := sarvamai.NewClient(sarvamai.Config{
 		APIKey: "your-api-key-here",
 	})
 
@@ -28,9 +27,9 @@ func main() {
 
 	defer audioFile.Close()
 
-	model := stt.ModelSaaras
-	mode := stt.ModeTranslit
-	resp, err := client.SpeechToText.Transcribe(ctx, stt.TranscribeRequest{
+	model := sarvamai.STTModelSaaras
+	mode := sarvamai.STTModeTranslate
+	resp, err := client.SpeechToText.Transcribe(ctx, sarvamai.STTTranscribeRequest{
 		File:     audioFile,
 		FileName: "sample-audio.wav",
 		Model:    &model,

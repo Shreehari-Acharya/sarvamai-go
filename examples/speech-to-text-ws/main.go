@@ -8,20 +8,19 @@ import (
 	"os"
 	"time"
 
-	sarvamai "github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk"
 )
 
 func main() {
 
-	client, err := sarvamai.NewSarvamAIClient(sarvamai.Config{
+	client, err := sarvamai.NewClient(sarvamai.Config{
 		APIKey: "your-api-key-here",
 	})
 	if err != nil {
 		log.Fatal("client error:", err)
 	}
 
-	stream, err := client.SpeechToText.TranscribeStream(context.Background(), stt.StreamConfig{
+	stream, err := client.SpeechToText.TranscribeStream(context.Background(), sarvamai.STTStreamConfig{
 		SampleRate: 16000,
 	})
 	if err != nil {

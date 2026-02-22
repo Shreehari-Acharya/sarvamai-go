@@ -6,13 +6,12 @@ import (
 	"log"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
 )
 
 func main() {
 	ctx := context.Background()
 
-	client, err := sarvamai.NewSarvamAIClient(sarvamai.Config{
+	client, err := sarvamai.NewClient(sarvamai.Config{
 		APIKey: "your-api-key-here",
 	})
 	if err != nil {
@@ -22,7 +21,7 @@ func main() {
 	{
 		// Example 1: Basic translation (English to Hindi)
 		// Translates "Hello" from English to Hindi using default mayura:v1 model.
-		resp, err := client.Text.Translate(ctx, text.TranslateRequest{
+		resp, err := client.Text.Translate(ctx, sarvamai.TranslateRequest{
 			Input:              "Hello",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "hi-IN",
@@ -39,7 +38,7 @@ func main() {
 	{
 		// Example 2: Auto-detect source language
 		// Uses "auto" to automatically detect source language (mayura:v1 only).
-		resp, err := client.Text.Translate(ctx, text.TranslateRequest{
+		resp, err := client.Text.Translate(ctx, sarvamai.TranslateRequest{
 			Input:              "मैं ऑफिस जा रहा हूँ",
 			SourceLanguageCode: "auto",
 			TargetLanguageCode: "en-IN",
@@ -55,8 +54,8 @@ func main() {
 	{
 		// Example 3: Using sarvam-translate:v1 model with additional languages
 		// This model supports 22 Indian languages but only formal mode.
-		model := text.ModelSarvamTranslate
-		resp, err := client.Text.Translate(ctx, text.TranslateRequest{
+		model := sarvamai.ModelSarvamTranslate
+		resp, err := client.Text.Translate(ctx, sarvamai.TranslateRequest{
 			Input:              "Hello world",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "ta-IN", // Tamil
@@ -72,10 +71,10 @@ func main() {
 	{
 		// Example 4: Translate with output script (transliteration)
 		// OutputScript is only supported by mayura:v1 model.
-		mode := text.ModeFormal
-		outputScript := text.OutputScriptRoman
+		mode := sarvamai.ModeFormal
+		outputScript := sarvamai.OutputScriptRoman
 
-		resp, err := client.Text.Translate(ctx, text.TranslateRequest{
+		resp, err := client.Text.Translate(ctx, sarvamai.TranslateRequest{
 			Input:              "Your EMI of Rs. 3000 is pending",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "hi-IN",
@@ -92,9 +91,9 @@ func main() {
 	{
 		// Example 5: Translate with native numerals
 		// Uses language-specific native numerals instead of international (0-9).
-		numerals := text.NumeralsNative
+		numerals := sarvamai.NumeralsNative
 
-		resp, err := client.Text.Translate(ctx, text.TranslateRequest{
+		resp, err := client.Text.Translate(ctx, sarvamai.TranslateRequest{
 			Input:              "My phone number is: 9840950950",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "hi-IN",
@@ -110,8 +109,8 @@ func main() {
 	{
 		// Example 6: Translate with speaker gender
 		// Influences the translation style based on speaker gender.
-		gender := text.GenderFemale
-		req := text.TranslateRequest{
+		gender := sarvamai.GenderFemale
+		req := sarvamai.TranslateRequest{
 			Input:              "I am going to the office",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "hi-IN",

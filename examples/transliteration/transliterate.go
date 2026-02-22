@@ -6,13 +6,12 @@ import (
 	"log"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
 )
 
 func main() {
 	ctx := context.Background()
 
-	client, err := sarvamai.NewSarvamAIClient(sarvamai.Config{
+	client, err := sarvamai.NewClient(sarvamai.Config{
 		APIKey: "your-api-key-here",
 	})
 	if err != nil {
@@ -22,7 +21,7 @@ func main() {
 	{
 		// Example 1: Basic transliteration (English to Hindi)
 		// Converts "Hello" from Latin script to Devanagari script.
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "Hello",
 			SourceLanguageCode: "en-IN",
 			TargetLanguageCode: "hi-IN",
@@ -39,7 +38,7 @@ func main() {
 	{
 		// Example 2: Transliterate Hindi to English
 		// Converts from Devanagari script to Latin script.
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "नमस्ते",
 			SourceLanguageCode: "hi-IN",
 			TargetLanguageCode: "en-IN",
@@ -54,7 +53,7 @@ func main() {
 	{
 		// Example 3: Auto-detect source language
 		// Automatically detects the source language.
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "नमस्ते",
 			SourceLanguageCode: "auto",
 			TargetLanguageCode: "en-IN",
@@ -74,7 +73,7 @@ func main() {
 		// Note: Has no effect when target language is en-IN.
 		spokenForm := true
 
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "मुझे कल 9:30am को appointment है",
 			SourceLanguageCode: "hi-IN",
 			TargetLanguageCode: "hi-IN",
@@ -91,9 +90,9 @@ func main() {
 	{
 		// Example 5: Transliterate with native numerals
 		// Uses language-specific native numerals instead of international (0-9).
-		numerals := text.TransliterateNumeralsNative
+		numerals := sarvamai.TransliterateNumeralsNative
 
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "मेरे पास ₹200 है",
 			SourceLanguageCode: "hi-IN",
 			TargetLanguageCode: "hi-IN",
@@ -110,9 +109,9 @@ func main() {
 		// Example 6: Transliterate with spoken form numerals in English
 		// Converts numbers to their English spoken form.
 		spokenForm := true
-		spokenNumerals := text.SpokenFormNumeralsEnglish
+		spokenNumerals := sarvamai.SpokenFormNumeralsEnglish
 
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:                      "मेरे पास ₹200 है",
 			SourceLanguageCode:         "hi-IN",
 			TargetLanguageCode:         "hi-IN",
@@ -131,7 +130,7 @@ func main() {
 		// Example 7: Transliterate Tamil to English
 		// Converts from Tamil script to Latin script.
 
-		resp, err := client.Text.Transliterate(ctx, text.TransliterateRequest{
+		resp, err := client.Text.Transliterate(ctx, sarvamai.TransliterateRequest{
 			Input:              "வணக்கம்",
 			SourceLanguageCode: "ta-IN",
 			TargetLanguageCode: "en-IN",

@@ -6,13 +6,12 @@ import (
 	"log"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
 )
 
 func main() {
 	ctx := context.Background()
 
-	client, err := sarvamai.NewSarvamAIClient(sarvamai.Config{
+	client, err := sarvamai.NewClient(sarvamai.Config{
 		APIKey: "your-api-key-here",
 	})
 	if err != nil {
@@ -21,8 +20,8 @@ func main() {
 
 	{
 		// Example 1: Detect Hindi in Devanagari script
-		// Identifies the language and script of the input text.
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		// Identifies the language and script of the input sarvamai.
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "मैं ऑफिस जा रहा हूँ",
 		})
 		if err != nil {
@@ -36,7 +35,7 @@ func main() {
 
 	{
 		// Example 2: Detect English in Latin script
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "Hello world",
 		})
 
@@ -51,7 +50,7 @@ func main() {
 
 	{
 		// Example 3: Detect Bengali in Bengali script
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "আমি বাংলায় কথা বলি",
 		})
 		if err != nil {
@@ -65,7 +64,7 @@ func main() {
 
 	{
 		// Example 4: Detect Tamil in Tamil script
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "வணக்கம்",
 		})
 		if err != nil {
@@ -79,7 +78,7 @@ func main() {
 
 	{
 		// Example 5: Detect Punjabi in Gurmukhi script
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ",
 		})
 		if err != nil {
@@ -93,7 +92,7 @@ func main() {
 
 	{
 		// Example 6: Detect mixed text with Hindi and English
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "मैं ऑफिस जा रहा हूँ। मेरे पास बहुत काम है।",
 		})
 		if err != nil {
@@ -107,7 +106,7 @@ func main() {
 
 	{
 		// Example 7: Detect Telugu in Telugu script
-		resp, err := client.Text.DetectLanguage(ctx, text.DetectRequest{
+		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
 			Input: "నమస్కారం",
 		})
 		if err != nil {
