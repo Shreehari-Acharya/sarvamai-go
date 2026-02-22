@@ -2,8 +2,13 @@ package stt
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
+	"net/url"
+	"strconv"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
 type Client struct {
@@ -57,4 +62,127 @@ func (c *Client) Transcribe(ctx context.Context, req TranscribeRequest) (*Transc
 	}
 
 	return &resp, nil
+}
+
+func (c *Client) TranscribeStream(ctx context.Context, cfg StreamConfig) (*Stream, error) {
+	if err := cfg.Validate(); err != nil {
+		return nil, err
+	}
+
+	query := url.Values{}
+
+	if cfg.Language == nil {
+		lang := languages.Code("unknown")
+		cfg.Language = &lang
+	}
+	query.Set("language-code", string(*cfg.Language))
+
+	if cfg.Model != nil {
+		query.Set("model", string(*cfg.Model))
+	}
+	if cfg.Mode != nil {
+		query.Set("mode", string(*cfg.Mode))
+	}
+	if cfg.SampleRate != 0 {
+		query.Set("sample_rate", strconv.Itoa(int(cfg.SampleRate)))
+	}
+	if cfg.InputAudioCodec != nil {
+		query.Set("input_audio_codec", string(*cfg.InputAudioCodec))
+	}
+
+	query.Set("high_vad_sensitivity", strconv.FormatBool(cfg.HighVADSensitivity))
+	query.Set("vad_signals", strconv.FormatBool(cfg.VADSignals))
+	query.Set("flush_signal", strconv.FormatBool(cfg.FlushSignal))
+
+	wsConn, err := c.transport.DialWebSocket(ctx, "/speech-to-text/ws", query)
+	if err != nil {
+		return nil, err
+	}
+
+	stream := &Stream{
+		ws:         wsConn,
+		messages:   make(chan StreamResponse),
+		errs:       make(chan error, 1), // buffered to prevent blocking on error
+		done:       make(chan struct{}),
+		transcript: "",
+	}
+
+	go stream.readLoop()
+
+	return stream, nil
+}
+
+func (s *Stream) SendAudio(pcm []byte) error {
+	payload := map[string]any{
+		"audio": map[string]any{
+			"data":        base64.StdEncoding.EncodeToString(pcm),
+			"sample_rate": "16000",
+			"encoding":    "audio/wav",
+		},
+	}
+
+	return s.ws.WriteJSON(payload)
+}
+
+func (s *Stream) Flush() error {
+	return s.ws.WriteJSON(map[string]string{
+		"type": "flush",
+	})
+}
+
+func (s *Stream) Messages() <-chan StreamResponse {
+	return s.messages
+}
+
+func (s *Stream) Errors() <-chan error {
+	return s.errs
+}
+
+func (s *Stream) Close() error {
+	close(s.done)
+	return s.ws.Close()
+}
+
+func (s *Stream) Transcript() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.transcript
+}
+
+func (s *Stream) readLoop() {
+	defer close(s.messages)
+	defer close(s.errs)
+
+	for {
+		_, data, err := s.ws.ReadMessage()
+		if err != nil {
+			select {
+			case <-s.done:
+				// Stream was closed, exit gracefully
+			default:
+				s.errs <- err
+			}
+			return
+		}
+
+		var resp StreamResponse
+		if err := json.Unmarshal(data, &resp); err != nil {
+			s.errs <- err
+			continue
+		}
+
+		if resp.Type == TypeData {
+			var transcriptionData TranscriptionData
+			if err := resp.UnmarshalData(&transcriptionData); err == nil {
+				s.mu.Lock()
+				if s.transcript != "" {
+					s.transcript += " "
+				}
+				s.transcript += transcriptionData.Transcript
+				s.mu.Unlock()
+			}
+		}
+
+		s.messages <- resp
+	}
 }

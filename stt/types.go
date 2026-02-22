@@ -1,37 +1,43 @@
 package stt
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"encoding/json"
 	"io"
+	"sync"
+
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
 var (
 	saarikaLanguages = map[languages.Code]bool{
-		"hi-IN": true, // Hindi
-		"bn-IN": true, // Bengali
-		"kn-IN": true, // Kannada
-		"ml-IN": true, // Malayalam
-		"mr-IN": true, // Marathi
-		"od-IN": true, // Odia
-		"pa-IN": true, // Punjabi
-		"ta-IN": true, // Tamil
-		"te-IN": true, // Telugu
-		"en-IN": true, // English
-		"gu-IN": true, // Gujarati
+		"unknown": true, // auto-detect
+		"hi-IN":   true, // Hindi
+		"bn-IN":   true, // Bengali
+		"kn-IN":   true, // Kannada
+		"ml-IN":   true, // Malayalam
+		"mr-IN":   true, // Marathi
+		"od-IN":   true, // Odia
+		"pa-IN":   true, // Punjabi
+		"ta-IN":   true, // Tamil
+		"te-IN":   true, // Telugu
+		"en-IN":   true, // English
+		"gu-IN":   true, // Gujarati
 	}
 
 	saarasLanguages = map[languages.Code]bool{
-		"hi-IN": true, // Hindi
-		"bn-IN": true, // Bengali
-		"kn-IN": true, // Kannada
-		"ml-IN": true, // Malayalam
-		"mr-IN": true, // Marathi
-		"od-IN": true, // Odia
-		"pa-IN": true, // Punjabi
-		"ta-IN": true, // Tamil
-		"te-IN": true, // Telugu
-		"en-IN": true, // English
-		"gu-IN": true, // Gujarati
+		"unknown": true, // auto-detect
+		"hi-IN":   true, // Hindi
+		"bn-IN":   true, // Bengali
+		"kn-IN":   true, // Kannada
+		"ml-IN":   true, // Malayalam
+		"mr-IN":   true, // Marathi
+		"od-IN":   true, // Odia
+		"pa-IN":   true, // Punjabi
+		"ta-IN":   true, // Tamil
+		"te-IN":   true, // Telugu
+		"en-IN":   true, // English
+		"gu-IN":   true, // Gujarati
 
 		"as-IN":  true, // Assamese
 		"ur-IN":  true, // Urdu
@@ -123,6 +129,29 @@ const (
 	CodecPCMRAW   InputAudioCodec = "pcm_raw"
 )
 
+type StreamSampleRate int
+
+const (
+	SampleRate8000  StreamSampleRate = 8000
+	SampleRate16000 StreamSampleRate = 16000
+	SampleRate22050 StreamSampleRate = 22050
+	SampleRate24000 StreamSampleRate = 24000
+)
+
+type StreamAudioEncoding string
+
+const (
+	EncodingWAV StreamAudioEncoding = "audio/wav"
+)
+
+type VADSensitivity string
+
+const (
+	VADSensitivityHigh   VADSensitivity = "high"
+	VADSensitivityMedium VADSensitivity = "medium"
+	VADSensitivityLow    VADSensitivity = "low"
+)
+
 type TranscribeRequest struct {
 	File     io.Reader
 	FileName string
@@ -161,6 +190,80 @@ type TranscribeResponse struct {
 	LanguageProbability *float64            `json:"language_probability"`
 }
 
+type StreamConfig struct {
+	Language           *languages.Code
+	Model              *Model
+	Mode               *Mode
+	SampleRate         StreamSampleRate
+	HighVADSensitivity bool
+	VADSignals         bool
+	FlushSignal        bool
+	InputAudioCodec    *InputAudioCodec
+}
+
+type ResponseType string
+
+const (
+	TypeData   ResponseType = "data"
+	TypeError  ResponseType = "error"
+	TypeEvents ResponseType = "events"
+)
+
+type StreamResponse struct {
+	Type ResponseType    `json:"type"`
+	Data json.RawMessage `json:"data"`
+}
+
+func (r *StreamResponse) UnmarshalData(dest interface{}) error {
+	if r.Data == nil {
+		return nil
+	}
+	return json.Unmarshal(r.Data, dest)
+}
+
+type TranscriptionData struct {
+	RequestID           string               `json:"request_id"`
+	Transcript          string               `json:"transcript"`
+	Timestamps          *Timestamps          `json:"timestamps"`
+	DiarizedTranscript  *DiarizedTranscript  `json:"diarized_transcript"`
+	LanguageCode        *string              `json:"language_code"`
+	LanguageProbability *float64             `json:"language_probability"`
+	Metrics             TranscriptionMetrics `json:"metrics"`
+}
+
+type TranscriptionMetrics struct {
+	AudioDuration     float64 `json:"audio_duration"`
+	ProcessingLatency float64 `json:"processing_latency"`
+}
+
+type ErrorData struct {
+	Error string `json:"error"`
+	Code  string `json:"code"`
+}
+
+type EventType string
+
+const (
+	EventStartSpeech EventType = "START_SPEECH"
+	EventEndSpeech   EventType = "END_SPEECH"
+)
+
+type EventData struct {
+	EventType  EventType `json:"event_type"`
+	Timestamp  string    `json:"timestamp"`
+	SignalType string    `json:"signal_type"`
+	OccuredAt  float64   `json:"occured_at"`
+}
+
+type Stream struct {
+	ws         *transport.WSConnection
+	messages   chan StreamResponse
+	errs       chan error
+	done       chan struct{}
+	mu         sync.Mutex
+	transcript string
+}
+
 func (r *TranscribeRequest) Validate() error {
 
 	if err := validateFile(r); err != nil {
@@ -176,6 +279,26 @@ func (r *TranscribeRequest) Validate() error {
 	}
 
 	if err := validateLanguage(r); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s StreamConfig) Validate() error {
+	if err := validateStreamCodec(s); err != nil {
+		return err
+	}
+
+	if err := validateStreamMode(s); err != nil {
+		return err
+	}
+
+	if err := validateStreamLanguage(s); err != nil {
+		return err
+	}
+
+	if err := validateStreamSampleRate(s); err != nil {
 		return err
 	}
 
