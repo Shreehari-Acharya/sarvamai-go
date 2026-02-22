@@ -12,24 +12,24 @@ import (
 //
 
 type modelSpec struct {
-	supportedLanguages map[languages.Code]bool
-	supportsMode      bool
+	supportedLanguages   map[languages.Code]bool
+	supportsMode         bool
 	supportsOutputScript bool
-	name              string
+	name                 string
 }
 
 var modelRegistry = map[TranslateModel]modelSpec{
 	ModelMayura: {
-		supportedLanguages: languages.MayuraLanguages,
-		supportsMode:      false,
+		supportedLanguages:   languages.MayuraLanguages,
+		supportsMode:         false,
 		supportsOutputScript: false,
-		name:              "mayura:v1",
+		name:                 "mayura:v1",
 	},
 	ModelSarvamTranslate: {
-		supportedLanguages: languages.SarvamTranslateLanguages,
-		supportsMode:      false,
+		supportedLanguages:   languages.SarvamTranslateLanguages,
+		supportsMode:         false,
 		supportsOutputScript: false,
-		name:              "sarvam-translate:v1",
+		name:                 "sarvam-translate:v1",
 	},
 }
 

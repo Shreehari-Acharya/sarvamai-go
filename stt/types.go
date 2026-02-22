@@ -311,7 +311,7 @@ type Stream struct {
 	sampleRate StreamSampleRate
 }
 
-func (r *TranscribeRequest) Validate() error {
+func (r *TranscribeRequest) validate() error {
 
 	if err := validateFile(r); err != nil {
 		return err
@@ -332,7 +332,7 @@ func (r *TranscribeRequest) Validate() error {
 	return nil
 }
 
-func (s StreamConfig) Validate() error {
+func (s StreamConfig) validate() error {
 	if err := validateStreamCodec(s); err != nil {
 		return err
 	}

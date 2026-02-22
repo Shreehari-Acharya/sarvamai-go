@@ -66,7 +66,7 @@ func (c *Client) Transcribe(ctx context.Context, req TranscribeRequest) (*Transc
 	}
 
 	// Validate request parameters before making API call
-	err := req.Validate()
+	err := req.validate()
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +100,12 @@ func (c *Client) Transcribe(ctx context.Context, req TranscribeRequest) (*Transc
 //
 // # Streaming Workflow
 //
-//	1. Call TranscribeStream to get a Stream instance
-//	2. Send audio using stream.SendAudio() in a loop
-//	3. Call stream.Flush() to finalize current segment and get results
-//	4. Read transcriptions from stream.Messages()
-//	5. Handle errors from stream.Errors()
-//	6. Call stream.Close() when done
+//  1. Call TranscribeStream to get a Stream instance
+//  2. Send audio using stream.SendAudio() in a loop
+//  3. Call stream.Flush() to finalize current segment and get results
+//  4. Read transcriptions from stream.Messages()
+//  5. Handle errors from stream.Errors()
+//  6. Call stream.Close() when done
 //
 // # Example
 //
@@ -138,9 +138,6 @@ func (c *Client) Transcribe(ctx context.Context, req TranscribeRequest) (*Transc
 //	    }
 //	}
 func (c *Client) TranscribeStream(ctx context.Context, cfg StreamConfig) (*Stream, error) {
-	if err := cfg.Validate(); err != nil {
-		return nil, err
-	}
 
 	query := url.Values{}
 
@@ -161,6 +158,11 @@ func (c *Client) TranscribeStream(ctx context.Context, cfg StreamConfig) (*Strea
 	}
 	if cfg.InputAudioCodec != nil {
 		query.Set("input_audio_codec", string(*cfg.InputAudioCodec))
+	}
+
+	// validate config parameters before dialing WebSocket
+	if err := cfg.validate(); err != nil {
+		return nil, err
 	}
 
 	query.Set("high_vad_sensitivity", strconv.FormatBool(cfg.HighVADSensitivity))
