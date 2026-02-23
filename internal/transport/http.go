@@ -53,6 +53,8 @@ func (t *Transport) DoRequest(
 	}
 	req.Header.Set("Content-Type", contentType)
 
+	fmt.Printf("Making request to %s with body: %s\n", req.URL, reader)
+
 	resp, err := t.HTTPClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("execute request: %w", err)
@@ -75,6 +77,51 @@ func (t *Transport) DoRequest(
 	}
 
 	return nil
+}
+
+func (t *Transport) DoStreamRequest(
+	ctx context.Context,
+	method string,
+	path string,
+	body any,
+) (*http.Response, error) {
+
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
+	var reader io.Reader
+
+	if body != nil {
+		b, err := json.Marshal(body)
+		if err != nil {
+			return nil, fmt.Errorf("marshal request body: %w", err)
+		}
+		reader = bytes.NewBuffer(b)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, t.BaseURL+path, reader)
+	if err != nil {
+		return nil, fmt.Errorf("create request: %w", err)
+	}
+
+	req.Header.Set("api-subscription-key", t.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "text/event-stream")
+	req.Header.Set("Cache-Control", "no-cache")
+
+	resp, err := t.HTTPClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("execute request: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		err := sarvamaierrors.ParseAPIError(resp)
+		resp.Body.Close()
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 func (t *Transport) DoMultipartRequest(
