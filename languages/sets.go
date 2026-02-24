@@ -105,3 +105,18 @@ var SaarasLanguages = map[Code]bool{
 	"mai-IN":  true, // Maithili
 	"doi-IN":  true, // Dogri
 }
+
+// TargetLanguages for TTS - 11 languages (same as Mayura without auto)
+var TargetLanguages = map[Code]bool{
+	"bn-IN": true, // Bengali
+	"en-IN": true, // English
+	"gu-IN": true, // Gujarati
+	"hi-IN": true, // Hindi
+	"kn-IN": true, // Kannada
+	"ml-IN": true, // Malayalam
+	"mr-IN": true, // Marathi
+	"od-IN": true, // Odia
+	"pa-IN": true, // Punjabi
+	"ta-IN": true, // Tamil
+	"te-IN": true, // Telugu
+}
