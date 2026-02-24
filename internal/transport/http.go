@@ -53,8 +53,6 @@ func (t *Transport) DoRequest(
 	}
 	req.Header.Set("Content-Type", contentType)
 
-	fmt.Printf("Making request to %s with body: %s\n", req.URL, reader)
-
 	resp, err := t.HTTPClient.Do(req)
 	if err != nil {
 		return fmt.Errorf("execute request: %w", err)
