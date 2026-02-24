@@ -3,9 +3,11 @@ package sarvamai
 import (
 	"errors"
 
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/chat"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/tts"
 )
 
 // Client provides access to Sarvam AI services.
@@ -16,6 +18,8 @@ import (
 //
 //   - Text: For translation, transliteration, and language detection
 //   - SpeechToText: For speech-to-text transcription (REST and streaming)
+//   - TextToSpeech: For text-to-speech conversion
+//   - Chat: For conversational AI interactions
 //
 // # Example
 //
@@ -31,11 +35,19 @@ import (
 //
 //	// Use speech-to-text
 //	resp, err := client.SpeechToText.Transcribe(ctx, stt.TranscribeRequest{...})
+//
+//	// Use text-to-speech
+//	resp, err := client.TextToSpeech.Convert(ctx, tts.ConvertRequest{...})
+//
+//	// Use chat
+//	resp, err := client.Chat.Completions(ctx, chat.ChatRequest{...})
 type Client struct {
 	transport *transport.Transport
 
 	Text         *text.Client
 	SpeechToText *stt.Client
+	TextToSpeech *tts.TTSClient
+	Chat         *chat.ChatClient
 }
 
 // NewClient creates a new Sarvam AI client with the given configuration.
@@ -82,6 +94,8 @@ func NewClient(cfg Config) (*Client, error) {
 
 	c.Text = text.NewClient(t)
 	c.SpeechToText = stt.NewClient(t)
+	c.TextToSpeech = tts.NewTTSClient(t)
+	c.Chat = chat.NewChatClient(t)
 
 	return c, nil
 }

@@ -1,8 +1,8 @@
 package tts
 
 import (
-	"slices"
 	"fmt"
+	"slices"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 )
@@ -37,9 +37,9 @@ func WithSpeakerVoice(voice SpeakerVoice) option {
 		}
 
 		if slices.Contains(allowedVoices, voice) {
-				r.SpeakerVoice = &voice
-				return nil
-			}
+			r.SpeakerVoice = &voice
+			return nil
+		}
 		return &sarvamaierrors.ValidationError{
 			Field:   "speaker_voice",
 			Message: fmt.Sprintf("speaker voice %s is not supported for model %s", voice, model),
@@ -167,9 +167,9 @@ func WithStreamSpeaker(voice SpeakerVoice) streamOption {
 		}
 
 		if slices.Contains(allowedVoices, voice) {
-				c.Speaker = voice
-				return nil
-			}
+			c.Speaker = voice
+			return nil
+		}
 		return &sarvamaierrors.ValidationError{
 			Field:   "speaker_voice",
 			Message: fmt.Sprintf("speaker voice %s is not supported for model %s", voice, model),
