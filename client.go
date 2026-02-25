@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/chat"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/docintel"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
@@ -44,10 +45,11 @@ import (
 type Client struct {
 	transport *transport.Transport
 
-	Text         *text.TextClient
-	SpeechToText *stt.Client
-	TextToSpeech *tts.TTSClient
-	Chat         *chat.ChatClient
+	Text                 *text.TextClient
+	SpeechToText         *stt.Client
+	TextToSpeech         *tts.TTSClient
+	Chat                 *chat.ChatClient
+	DocumentIntelligence *docintel.DocIntelClient
 }
 
 // NewClient creates a new Sarvam AI client with the given configuration.
@@ -96,6 +98,6 @@ func NewClient(cfg Config) (*Client, error) {
 	c.SpeechToText = stt.NewClient(t)
 	c.TextToSpeech = tts.NewTTSClient(t)
 	c.Chat = chat.NewChatClient(t)
-
+	c.DocumentIntelligence = docintel.NewDocIntelClient(t)
 	return c, nil
 }

@@ -107,3 +107,31 @@ var TargetLanguages = map[Code]bool{
 	"ta-IN": true, // Tamil
 	"te-IN": true, // Telugu
 }
+
+// allowed Language codes for Document Intelligence - docintel
+
+var AllowedDocIntelLanguages = map[Code]bool{
+	"hi-IN":   true, // Hindi
+	"en-IN":   true, // English
+	"bn-IN":   true, // Bengali
+	"gu-IN":   true, // Gujarati
+	"kn-IN":   true, // Kannada
+	"ml-IN":   true, // Malayalam
+	"mr-IN":   true, // Marathi
+	"od-IN":   true, // Odia
+	"pa-IN":   true, // Punjabi
+	"ta-IN":   true, // Tamil
+	"te-IN":   true, // Telugu
+	"ur-IN":   true, // Urdu
+	"as-IN":   true, // Assamese
+	"bodo-IN": true, // Bodo
+	"doi-IN":  true, // Dogri
+	"ks-IN":   true, // Kashmiri
+	"kok-IN":  true, // Konkani
+	"mai-IN":  true, // Maithili
+	"mni-IN":  true, // Manipuri
+	"sa-IN":   true, // Sanskrit
+	"sat-IN":  true, // Santali
+	"sd-IN":   true, // Sindhi
+	"ne-IN":   true, // Nepali
+}
