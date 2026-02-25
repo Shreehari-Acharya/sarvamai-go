@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
 )
@@ -11,9 +12,15 @@ import (
 func main() {
 	ctx := context.Background()
 
+	apiKey := os.Getenv("SARVAM_API_KEY")
+	if apiKey == "" {
+		log.Fatal("SARVAM_API_KEY environment variable not set")
+	}
+
 	client, err := sarvamai.NewClient(sarvamai.Config{
-		APIKey: "your-api-key-here",
+		APIKey: apiKey,
 	})
+
 	if err != nil {
 		log.Fatalf("Failed to create client: %v", err)
 	}
@@ -21,9 +28,9 @@ func main() {
 	{
 		// Example 1: Detect Hindi in Devanagari script
 		// Identifies the language and script of the input sarvamai.
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "मैं ऑफिस जा रहा हूँ",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"मैं ऑफिस जा रहा हूँ",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
@@ -35,9 +42,9 @@ func main() {
 
 	{
 		// Example 2: Detect English in Latin script
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "Hello world",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"I am going to the office",
+		)
 
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
@@ -50,9 +57,9 @@ func main() {
 
 	{
 		// Example 3: Detect Bengali in Bengali script
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "আমি বাংলায় কথা বলি",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"আমি বাংলায় কথা বলি",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
@@ -64,9 +71,9 @@ func main() {
 
 	{
 		// Example 4: Detect Tamil in Tamil script
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "வணக்கம்",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"வணக்கம்",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
@@ -78,9 +85,9 @@ func main() {
 
 	{
 		// Example 5: Detect Punjabi in Gurmukhi script
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"ਸਤ ਸ੍ਰੀ ਅਕਾਲ",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
@@ -92,9 +99,9 @@ func main() {
 
 	{
 		// Example 6: Detect mixed text with Hindi and English
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "मैं ऑफिस जा रहा हूँ। मेरे पास बहुत काम है।",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"मैं ऑफिस जा रहा हूँ। मेरे पास बहुत काम है।",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
@@ -106,9 +113,9 @@ func main() {
 
 	{
 		// Example 7: Detect Telugu in Telugu script
-		resp, err := client.Text.DetectLanguage(ctx, sarvamai.DetectRequest{
-			Input: "నమస్కారం",
-		})
+		resp, err := client.Text.DetectLanguage(ctx,
+			"నమస్కారం",
+		)
 		if err != nil {
 			log.Fatalf("DetectLanguage failed: %v", err)
 		}
