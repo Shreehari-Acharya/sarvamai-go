@@ -47,20 +47,7 @@ var SarvamTranslateLanguages = map[Code]bool{
 }
 
 // Transliterate languages - 12 languages + auto (same as Mayura)
-var TransliterateLanguages = map[Code]bool{
-	"auto":  true,
-	"bn-IN": true,
-	"en-IN": true,
-	"gu-IN": true,
-	"hi-IN": true,
-	"kn-IN": true,
-	"ml-IN": true,
-	"mr-IN": true,
-	"od-IN": true,
-	"pa-IN": true,
-	"ta-IN": true,
-	"te-IN": true,
-}
+var TransliterateLanguages = MayuraLanguages
 
 // Saarika languages - 12 languages + unknown (for STT)
 var SaarikaLanguages = map[Code]bool{

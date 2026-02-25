@@ -4,19 +4,28 @@ import (
 	"context"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text/detect"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text/translate"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text/transliteration"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
-type Client struct {
+type TextClient struct {
 	transport *transport.Transport
 }
 
-func NewClient(t *transport.Transport) *Client {
-	return &Client{
+func NewTextClient(t *transport.Transport) *TextClient {
+	return &TextClient{
 		transport: t,
 	}
+}
+
+type translateRequest struct {
+	Input              string          `json:"input"`
+	SourceLanguageCode languages.Code  `json:"source_language_code"`
+	TargetLanguageCode languages.Code  `json:"target_language_code"`
+	SpeakerGender      *SpeakerGender  `json:"speaker_gender,omitempty"`
+	Mode               *TranslateMode  `json:"mode,omitempty"`
+	Model              *TranslateModel `json:"model,omitempty"`
+	OutputScript       *OutputScript   `json:"output_script,omitempty"`
+	NumeralsFormat     *NumeralsFormat `json:"numerals_format,omitempty"`
 }
 
 // Translate converts text from one language to another while preserving its meaning.
@@ -24,21 +33,53 @@ func NewClient(t *transport.Transport) *Client {
 // For example, 'मैं ऑफिस जा रहा हूँ' translates to 'I am going to the office' in English,
 // where the script and language change, but the original meaning remains the same.
 //
-// The request can be validated before sending by calling req.Validate().
-// If validation fails, the error will contain details about what fields are invalid.
+// # Parameters
 //
-// Example:
+//	ctx: Context for the request
+//	input: The text to translate (max 1000 chars for mayura:v1, 2000 chars for sarvam-translate:v1)
+//	sourceLang: Source language code (use "auto" for mayura:v1 to auto-detect)
+//	targetLang: Target language code
+//	options: Optional functional options (WithModel, WithMode, WithOutputScript, etc.)
 //
-//	resp, err := client.Translate(ctx, translate.Request{
-//	    Input:              "मैं ऑफिस जा रहा हूँ",
-//	    SourceLanguageCode: "hi-IN",
-//	    TargetLanguageCode: "en-IN",
-//	})
-func (c *Client) Translate(ctx context.Context, req translate.Request) (*translate.Response, error) {
-	var resp translate.Response
+// # Model-specific notes
+//
+// mayura:v1:
+//   - Supports 12 languages with auto-detection
+//   - Supports modes: formal, modern-colloquial, classic-colloquial, code-mixed
+//   - Supports output scripts: null, roman, fully-native, spoken-form-in-native
+//
+// sarvam-translate:v1:
+//   - Supports 22 Indian languages
+//   - Only supports formal mode
+//   - Does not support output_script
+//
+// # Example
+//
+//	resp, err := client.Translate(ctx, "Hello", "en-IN", "hi-IN")
+//	// resp.TranslatedText = "नमस्ते"
+func (c *TextClient) Translate(
+	ctx context.Context,
+	input string,
+	sourceLang languages.Code,
+	targetLang languages.Code,
+	options ...translateOption,
+) (*TranslateResponse, error) {
+	var resp TranslateResponse
+
+	req := &translateRequest{
+		Input:              input,
+		SourceLanguageCode: sourceLang,
+		TargetLanguageCode: targetLang,
+	}
+
+	for _, opt := range options {
+		if err := opt(req); err != nil {
+			return nil, err
+		}
+	}
 
 	// Validate the request before sending to catch any client-side errors early.
-	if err := req.Validate(); err != nil {
+	if err := validateTranslateRequest(*req); err != nil {
 		return nil, err
 	}
 
@@ -57,27 +98,58 @@ func (c *Client) Translate(ctx context.Context, req translate.Request) (*transla
 	return &resp, nil
 }
 
+type transliterateRequest struct {
+	Input                      string                      `json:"input"`
+	SourceLanguageCode         languages.Code              `json:"source_language_code"`
+	TargetLanguageCode         languages.Code              `json:"target_language_code"`
+	NumeralsFormat             *NumeralsFormat             `json:"numerals_format,omitempty"`
+	SpokenFormNumeralsLanguage *SpokenFormNumeralsLanguage `json:"spoken_form_numerals_language,omitempty"`
+	SpokenForm                 *bool                       `json:"spoken_form,omitempty"`
+}
+
 // Transliterate converts text from one script to another while preserving the original pronunciation.
 //
 // For example, 'नमस्ते' becomes 'namaste' in English, and 'how are you' can be written as 'हाउ आर यू'
 // in Devanagari. This process ensures that the sound of the original text remains intact,
 // even when written in a different script.
 //
-// The request can be validated before sending by calling req.Validate().
-// If validation fails, the error will contain details about what fields are invalid.
+// # Parameters
 //
-// Example:
+//	ctx: Context for the request
+//	input: The text to transliterate (max 1000 chars)
+//	sourceLang: Source language code (use "auto" for auto-detection)
+//	targetLang: Target language code
+//	options: Optional functional options (WithSpokenForm, WithNumeralsFormatTransliteration, etc.)
 //
-//	resp, err := client.Transliterate(ctx, transliteration.Request{
-//	    Input:              "Hello",
-//	    SourceLanguageCode: "en-IN",
-//	    TargetLanguageCode: "hi-IN",
-//	})
-func (c *Client) Transliterate(ctx context.Context, req transliteration.Request) (*transliteration.Response, error) {
-	var resp transliteration.Response
+// # Supported Languages
+//
+// # English, Hindi, Bengali, Gujarati, Kannada, Malayalam, Marathi, Odia, Punjabi, Tamil, Telugu
+//
+// # Example
+//
+//	resp, err := client.Transliterate(ctx, "Hello", "en-IN", "hi-IN")
+//	// resp.TransliteratedText = "हैलो"
+func (c *TextClient) Transliterate(ctx context.Context,
+	input string,
+	sourceLang languages.Code,
+	targetLang languages.Code,
+	options ...transliterationOption,
+) (*TransliterateResponse, error) {
+	var resp TransliterateResponse
 
+	req := &transliterateRequest{
+		Input:              input,
+		SourceLanguageCode: sourceLang,
+		TargetLanguageCode: targetLang,
+	}
+
+	for _, opt := range options {
+		if err := opt(req); err != nil {
+			return nil, err
+		}
+	}
 	// Validate the request before sending to catch any client-side errors early.
-	if err := req.Validate(); err != nil {
+	if err := validateTransliterateRequest(*req); err != nil {
 		return nil, err
 	}
 
@@ -96,23 +168,36 @@ func (c *Client) Transliterate(ctx context.Context, req transliteration.Request)
 	return &resp, nil
 }
 
+type detectLanguageRequest struct {
+	Input string `json:"input"`
+}
+
 // DetectLanguage identifies the language and script of the given text.
 //
 // It returns the detected language code (e.g., "hi-IN", "en-IN") and script code
 // (e.g., "Deva" for Devanagari, "Latn" for Latin).
 //
-// Example:
+// # Parameters
 //
-//	resp, err := client.DetectLanguage(ctx, detect.Request{
-//	    Input: "नमस्ते",
-//	})
+//	ctx: Context for the request
+//	input: The text to analyze (max 1000 characters)
+//
+// # Example
+//
+//	resp, err := client.DetectLanguage(ctx, "नमस्ते")
 //	// resp.LanguageCode = "hi-IN"
 //	// resp.ScriptCode = "Deva"
-func (c *Client) DetectLanguage(ctx context.Context, req detect.Request) (*detect.Response, error) {
-	var resp detect.Response
+func (c *TextClient) DetectLanguage(ctx context.Context,
+	input string,
+) (*DetectLanguageResponse, error) {
+	var resp DetectLanguageResponse
+
+	req := detectLanguageRequest{
+		Input: input,
+	}
 
 	// Validate the request before sending to catch any client-side errors early.
-	if err := req.Validate(); err != nil {
+	if err := validateDetectLanguageRequest(req); err != nil {
 		return nil, err
 	}
 	err := c.transport.DoRequest(

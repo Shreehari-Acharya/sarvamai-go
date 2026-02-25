@@ -44,7 +44,7 @@ import (
 type Client struct {
 	transport *transport.Transport
 
-	Text         *text.Client
+	Text         *text.TextClient
 	SpeechToText *stt.Client
 	TextToSpeech *tts.TTSClient
 	Chat         *chat.ChatClient
@@ -92,7 +92,7 @@ func NewClient(cfg Config) (*Client, error) {
 		transport: t,
 	}
 
-	c.Text = text.NewClient(t)
+	c.Text = text.NewTextClient(t)
 	c.SpeechToText = stt.NewClient(t)
 	c.TextToSpeech = tts.NewTTSClient(t)
 	c.Chat = chat.NewChatClient(t)
