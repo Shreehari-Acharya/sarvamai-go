@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"reflect"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 )
@@ -128,7 +129,7 @@ func (t *Transport) DoMultipartRequest(
 	fileFieldName string,
 	fileName string,
 	file io.Reader,
-	fields map[string]string,
+	formStruct any,
 	result any,
 ) error {
 
@@ -139,6 +140,7 @@ func (t *Transport) DoMultipartRequest(
 		defer pw.Close()
 		defer writer.Close()
 
+		// Write file part
 		part, err := writer.CreateFormFile(fileFieldName, fileName)
 		if err != nil {
 			pw.CloseWithError(err)
@@ -150,17 +152,46 @@ func (t *Transport) DoMultipartRequest(
 			return
 		}
 
-		for key, value := range fields {
-			if err := writer.WriteField(key, value); err != nil {
-				pw.CloseWithError(err)
-				return
+		// Write struct fields
+		if formStruct != nil {
+			v := reflect.ValueOf(formStruct)
+			if v.Kind() == reflect.Ptr {
+				v = v.Elem()
+			}
+
+			tp := v.Type()
+
+			for i := 0; i < v.NumField(); i++ {
+				fieldValue := v.Field(i)
+				fieldType := tp.Field(i)
+
+				tag := fieldType.Tag.Get("form")
+				if tag == "" {
+					continue
+				}
+
+				if fieldValue.IsNil() {
+					continue
+				}
+
+				value := fmt.Sprintf("%v", fieldValue.Elem().Interface())
+
+				if err := writer.WriteField(tag, value); err != nil {
+					pw.CloseWithError(err)
+					return
+				}
 			}
 		}
 	}()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, t.BaseURL+path, pr)
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodPost,
+		t.BaseURL+path,
+		pr,
+	)
 	if err != nil {
-		return fmt.Errorf("create multipart request: %w", err)
+		return err
 	}
 
 	req.Header.Set("api-subscription-key", t.APIKey)
@@ -168,7 +199,7 @@ func (t *Transport) DoMultipartRequest(
 
 	resp, err := t.HTTPClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("execute multipart request: %w", err)
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -177,8 +208,8 @@ func (t *Transport) DoMultipartRequest(
 	}
 
 	if result != nil {
-		if err := json.NewDecoder(resp.Body).Decode(result); err != nil && err != io.EOF {
-			return fmt.Errorf("decode response: %w", err)
+		if err := json.NewDecoder(resp.Body).Decode(result); err != nil {
+			return err
 		}
 	}
 
