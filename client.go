@@ -46,7 +46,7 @@ type Client struct {
 	transport *transport.Transport
 
 	Text                 *text.TextClient
-	SpeechToText         *stt.Client
+	SpeechToText         *stt.STTClient
 	TextToSpeech         *tts.TTSClient
 	Chat                 *chat.ChatClient
 	DocumentIntelligence *docintel.DocIntelClient
@@ -95,7 +95,7 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	c.Text = text.NewTextClient(t)
-	c.SpeechToText = stt.NewClient(t)
+	c.SpeechToText = stt.NewSTTClient(t)
 	c.TextToSpeech = tts.NewTTSClient(t)
 	c.Chat = chat.NewChatClient(t)
 	c.DocumentIntelligence = docintel.NewDocIntelClient(t)
