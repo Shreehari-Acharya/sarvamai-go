@@ -72,10 +72,10 @@ func validateMode(model *Model, mode *Mode) error {
 
 func validateLanguageWithSpec(
 	model *Model,
-	language *languages.Code,
+	language languages.Code,
 	defaultIfNil bool,
 ) error {
-	if language == nil {
+	if language == "" {
 		return nil
 	}
 
@@ -87,10 +87,10 @@ func validateLanguageWithSpec(
 		return nil
 	}
 
-	if !spec.supportedLanguages[*language] {
+	if !spec.supportedLanguages[language] {
 		return &sarvamaierrors.ValidationError{
 			Field:   "language_code",
-			Message: fmt.Sprintf("%s is not supported by %s model", *language, spec.name),
+			Message: fmt.Sprintf("%s is not supported by %s model", language, spec.name),
 		}
 	}
 
@@ -116,15 +116,18 @@ func validateCodecValue[T comparable](
 // Non-Streaming Validations
 //
 
-func validateForSaarasMode(r *TranscribeRequest) error {
+func validateForSaarasMode(r *transcribeRequest) error {
 	return validateMode(r.Model, r.Mode)
 }
 
-func validateLanguage(r *TranscribeRequest) error {
-	return validateLanguageWithSpec(r.Model, r.Language, false)
+func validateLanguage(r *transcribeRequest) error {
+	if r.Language == nil {
+		return nil
+	}
+	return validateLanguageWithSpec(r.Model, *r.Language, false)
 }
 
-func validateFile(r *TranscribeRequest) error {
+func validateFile(r *transcribeRequest) error {
 	if r.File == nil {
 		return &sarvamaierrors.ValidationError{
 			Field:   "file",
@@ -134,7 +137,7 @@ func validateFile(r *TranscribeRequest) error {
 	return nil
 }
 
-func validateCodec(r *TranscribeRequest) error {
+func validateCodec(r *transcribeRequest) error {
 	return validateCodecValue(
 		r.AudioCodec,
 		allowedAudioCodecs,
@@ -147,16 +150,16 @@ func validateCodec(r *TranscribeRequest) error {
 // Streaming Validations
 //
 
-func validateStreamMode(s StreamConfig) error {
+func validateStreamMode(s streamTranscribeRequest) error {
 	return validateMode(s.Model, s.Mode)
 }
 
-func validateStreamLanguage(s StreamConfig) error {
+func validateStreamLanguage(s streamTranscribeRequest) error {
 	// Streaming defaults to Saaras if model is nil
 	return validateLanguageWithSpec(s.Model, s.Language, true)
 }
 
-func validateStreamCodec(s StreamConfig) error {
+func validateStreamCodec(s streamTranscribeRequest) error {
 	return validateCodecValue(
 		s.InputAudioCodec,
 		allowedStreamCodecs,
@@ -165,13 +168,13 @@ func validateStreamCodec(s StreamConfig) error {
 	)
 }
 
-func validateStreamSampleRate(s StreamConfig) error {
+func validateStreamSampleRate(s streamTranscribeRequest) error {
 	allowedSampleRates := map[StreamSampleRate]bool{
 		SampleRate8000:  true,
 		SampleRate16000: true,
 	}
 
-	if s.SampleRate != 0 && !allowedSampleRates[s.SampleRate] {
+	if s.SampleRate != nil && !allowedSampleRates[*s.SampleRate] {
 		return &sarvamaierrors.ValidationError{
 			Field:   "sample_rate",
 			Message: "invalid sample rate for streaming",
@@ -189,4 +192,44 @@ var allowedStreamCodecs = map[InputAudioCodec]bool{
 	"pcm_s16le": true,
 	"pcm_l16":   true,
 	"pcm_raw":   true,
+}
+
+func validateTranscribeRequest(r *transcribeRequest) error {
+	if err := validateFile(r); err != nil {
+		return err
+	}
+
+	if err := validateCodec(r); err != nil {
+		return err
+	}
+
+	if err := validateForSaarasMode(r); err != nil {
+		return err
+	}
+
+	if err := validateLanguage(r); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateStreamConfig(s *streamTranscribeRequest) error {
+	if err := validateStreamCodec(*s); err != nil {
+		return err
+	}
+
+	if err := validateStreamMode(*s); err != nil {
+		return err
+	}
+
+	if err := validateStreamLanguage(*s); err != nil {
+		return err
+	}
+
+	if err := validateStreamSampleRate(*s); err != nil {
+		return err
+	}
+
+	return nil
 }

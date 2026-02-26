@@ -3,11 +3,11 @@ package stt
 
 import (
 	"encoding/json"
-	"io"
+	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
 // Model specifies the speech recognition model to use.
@@ -46,35 +46,6 @@ const (
 // InputAudioCodec specifies the audio codec of the input file.
 // Supported codecs include: wav, mp3, aac, ogg, opus, flac, mp4, amr, webm, pcm formats.
 type InputAudioCodec string
-
-var (
-	allowedAudioCodecs = map[InputAudioCodec]bool{
-		"wav":       true,
-		"x-wav":     true,
-		"wave":      true,
-		"mp3":       true,
-		"mpeg":      true,
-		"mpeg3":     true,
-		"x-mpeg-3":  true,
-		"x-mp3":     true,
-		"x-aac":     true,
-		"aac":       true,
-		"aiff":      true,
-		"x-aiff":    true,
-		"ogg":       true,
-		"opus":      true,
-		"flac":      true,
-		"x-flac":    true,
-		"mp4":       true,
-		"x-m4a":     true,
-		"amr":       true,
-		"x-ms-wma":  true,
-		"webm":      true,
-		"pcm_s16le": true,
-		"pcm_l16":   true,
-		"pcm_raw":   true,
-	}
-)
 
 // Common audio codec constants for use in requests.
 const (
@@ -136,38 +107,6 @@ const (
 	VADSensitivityLow    VADSensitivity = "low"
 )
 
-// TranscribeRequest represents a speech-to-text transcription request.
-//
-// # Required Fields
-//
-//   - File: Audio file reader
-//   - FileName: Name of the audio file (e.g., "audio.mp3")
-//
-// # Optional Fields
-//
-//   - Model: Speech recognition model (defaults to saarika:v2.5)
-//   - Mode: Processing mode (transcribe, translate, verbatim, translit, codemix)
-//   - Language: Language code for the audio
-//   - AudioCodec: Audio codec of the input file
-//
-// # Example
-//
-//	req := stt.TranscribeRequest{
-//	    File:     audioFile,
-//	    FileName: "recording.wav",
-//	    Model:    stt.ModelPtr(stt.ModelSaarika),
-//	    Mode:    stt.ModePtr(stt.ModeTranscribe),
-//	}
-type TranscribeRequest struct {
-	File     io.Reader
-	FileName string
-
-	Model      *Model
-	Mode       *Mode
-	Language   *languages.Code
-	AudioCodec *InputAudioCodec
-}
-
 // Timestamps contains word-level timing information for the transcription.
 type Timestamps struct {
 	Words            []string  `json:"words"`
@@ -206,34 +145,6 @@ type TranscribeResponse struct {
 	DiarizedTranscript  *DiarizedTranscript `json:"diarized_transcript"`
 	LanguageCode        *string             `json:"language_code"`
 	LanguageProbability *float64            `json:"language_probability"`
-}
-
-// StreamConfig holds configuration for streaming speech recognition.
-//
-// # Fields
-//
-//   - Language: Language code for recognition (use "auto" for auto-detection)
-//   - Model: Speech recognition model (saarika or saaras)
-//   - Mode: Processing mode
-//   - SampleRate: Audio sample rate (8000, 16000, 22050, or 24000)
-//   - HighVADSensitivity: Enable high VAD sensitivity
-//   - VADSignals: Receive voice activity detection signals
-//   - FlushSignal: Enable flush signals
-//   - InputAudioCodec: Audio codec of the input
-//
-// # Sample Rate Notes
-//
-// For streaming, use 16000 Hz for best compatibility with the API.
-// Other supported rates: 8000, 22050, 24000 Hz.
-type StreamConfig struct {
-	Language           *languages.Code
-	Model              *Model
-	Mode               *Mode
-	SampleRate         StreamSampleRate
-	HighVADSensitivity bool
-	VADSignals         bool
-	FlushSignal        bool
-	InputAudioCodec    *InputAudioCodec
 }
 
 // ResponseType indicates the type of streaming response.
@@ -298,56 +209,109 @@ type EventData struct {
 	OccuredAt  float64   `json:"occured_at"`
 }
 
-// Stream represents a WebSocket connection for streaming speech recognition.
-// Use SendAudio to send audio data, Flush to finalize the current segment,
-// and Messages/Errors to receive responses.
-type Stream struct {
-	ws         *transport.WSConnection
-	messages   chan StreamResponse
-	errs       chan error
-	done       chan struct{}
+// STTStream is an iterator for streaming speech recognition responses.
+// Use Next() to iterate through responses, Current() to get the current response,
+// and Err() to check for errors.
+type STTStream struct {
 	mu         sync.Mutex
-	transcript string
+	ws         *transport.WSConnection
+	done       bool
+	flushSent  bool
+	err        error
+	current    StreamResponse
+	transcript strings.Builder
 	sampleRate StreamSampleRate
+	doneChan   chan struct{}
 }
 
-func (r *TranscribeRequest) validate() error {
-
-	if err := validateFile(r); err != nil {
-		return err
+// NewSTTStream creates a new STTStream from a WebSocket connection and config.
+func NewSTTStream(ws *transport.WSConnection, sampleRate StreamSampleRate) *STTStream {
+	return &STTStream{
+		ws:         ws,
+		sampleRate: sampleRate,
+		doneChan:   make(chan struct{}),
 	}
-
-	if err := validateCodec(r); err != nil {
-		return err
-	}
-
-	if err := validateForSaarasMode(r); err != nil {
-		return err
-	}
-
-	if err := validateLanguage(r); err != nil {
-		return err
-	}
-
-	return nil
 }
 
-func (s StreamConfig) validate() error {
-	if err := validateStreamCodec(s); err != nil {
-		return err
+// Next advances the iterator to the next response.
+// Returns true if there is a response available, false if the stream is done or errored.
+func (s *STTStream) Next() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.done || s.err != nil {
+		return false
 	}
 
-	if err := validateStreamMode(s); err != nil {
-		return err
+	_, data, err := s.ws.ReadMessage()
+	if err != nil {
+		select {
+		case <-s.doneChan:
+			s.done = true
+		default:
+			s.err = err
+		}
+		return false
 	}
 
-	if err := validateStreamLanguage(s); err != nil {
-		return err
+	var resp StreamResponse
+	if err := json.Unmarshal(data, &resp); err != nil {
+		s.err = err
+		return false
 	}
 
-	if err := validateStreamSampleRate(s); err != nil {
-		return err
+	s.current = resp
+
+	switch resp.Type {
+	case TypeError:
+		var errData ErrorData
+		if err := resp.UnmarshalData(&errData); err == nil {
+			s.err = fmt.Errorf("stream error: %s (code: %s)", errData.Error, errData.Code)
+		} else {
+			s.err = fmt.Errorf("stream error with invalid error data: %w", err)
+		}
+		return false
+	case TypeData:
+		var data TranscriptionData
+		if err := resp.UnmarshalData(&data); err == nil {
+			s.transcript.WriteString(data.Transcript)
+		}
+		if s.flushSent {
+			s.done = true
+		}
+		return true
+	case TypeEvents:
+		// Handle events if needed (e.g., VAD signals)
+		return true
 	}
 
-	return nil
+	return true
+}
+
+// Current returns the current streaming response.
+// Valid only after Next returns true.
+func (s *STTStream) Current() StreamResponse {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.current
+}
+
+// Text returns all accumulated transcript as a string.
+func (s *STTStream) Text() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.transcript.String()
+}
+
+// Err returns the error encountered during streaming, if any.
+func (s *STTStream) Err() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.err
+}
+
+// Close closes the stream and releases resources.
+func (s *STTStream) Close() error {
+	close(s.doneChan)
+	return s.ws.Close()
 }
