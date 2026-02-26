@@ -7,13 +7,19 @@ import (
 	"os"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
 func main() {
 	ctx := context.Background()
 
+	apiKey := os.Getenv("SARVAM_API_KEY")
+	if apiKey == "" {
+		log.Fatal("SARVAM_API_KEY environment variable not set")
+	}
+
 	client, err := sarvamai.NewClient(sarvamai.Config{
-		APIKey: "your-api-key-here",
+		APIKey: apiKey,
 	})
 
 	if err != nil {
@@ -27,14 +33,12 @@ func main() {
 
 	defer audioFile.Close()
 
-	model := sarvamai.STTModelSaaras
-	mode := sarvamai.STTModeTranslate
-	resp, err := client.SpeechToText.Transcribe(ctx, sarvamai.STTTranscribeRequest{
-		File:     audioFile,
-		FileName: "sample-audio.wav",
-		Model:    &model,
-		Mode:     &mode,
-	})
+	resp, err := client.SpeechToText.Transcribe(
+		ctx,
+		audioFile,
+		stt.WithModel(stt.ModelSaaras),
+		stt.WithMode(stt.ModeTranslate),
+	)
 	if err != nil {
 		log.Fatalf("Transcription failed: %v", err)
 	}

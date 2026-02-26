@@ -9,69 +9,73 @@ import (
 	"time"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
 func main() {
 
+	ctx := context.Background()
+	apiKey := os.Getenv("SARVAM_API_KEY")
+	if apiKey == "" {
+		log.Fatal("SARVAM_API_KEY environment variable not set")
+	}
+
 	client, err := sarvamai.NewClient(sarvamai.Config{
-		APIKey: "your-api-key-here",
+		APIKey: apiKey,
 	})
 	if err != nil {
 		log.Fatal("client error:", err)
 	}
 
-	stream, err := client.SpeechToText.TranscribeStream(context.Background(), sarvamai.STTStreamConfig{
-		SampleRate: 16000,
-	})
+	stream, err := client.SpeechToText.TranscribeStream(
+		ctx,
+		"en-IN",
+		stt.WithStreamSampleRate(stt.SampleRate16000),
+	)
 	if err != nil {
 		log.Fatal("stream error:", err)
 	}
 	defer stream.Close()
 
-	// Handle errors from the stream in background
-	go func() {
-		for err := range stream.Errors() {
-			log.Println("stream error:", err)
-		}
-	}()
-
-	// Print messages as they arrive
-	go func() {
-		for msg := range stream.Messages() {
-			fmt.Printf("[%s] %s\n", msg.Type, msg.Data)
-		}
-	}()
-
-	// Open and stream audio file
+	// Open audio file
 	file, err := os.Open("examples/speech-to-text/sample-audio.wav")
 	if err != nil {
 		log.Fatal("file error:", err)
 	}
 	defer file.Close()
 
-	buf := make([]byte, 3200)
-	for {
-		n, err := file.Read(buf)
-		if err == io.EOF {
-			break
+	// Send audio in a goroutine
+	go func() {
+		buf := make([]byte, 3200)
+		for {
+			n, err := file.Read(buf)
+			if err == io.EOF {
+				stream.Flush()
+				break
+			}
+			if err != nil {
+				log.Printf("read error: %v", err)
+				return
+			}
+			if err := stream.SendAudio(buf[:n]); err != nil {
+				log.Printf("send error: %v", err)
+				return
+			}
+			time.Sleep(100 * time.Millisecond)
 		}
-		if err != nil {
-			log.Fatal("read error:", err)
-		}
-		if err := stream.SendAudio(buf[:n]); err != nil {
-			log.Fatal("send error:", err)
-		}
-		time.Sleep(100 * time.Millisecond)
+	}()
+
+	// Iterate through responses using the iterator pattern
+	for stream.Next() {
+		resp := stream.Current()
+		fmt.Printf("[%s] %s\n", resp.Type, resp.Data)
 	}
 
-	// Flush to finalize transcription
-	if err := stream.Flush(); err != nil {
-		log.Fatal("flush error:", err)
+	// Check for errors
+	if err := stream.Err(); err != nil {
+		log.Printf("stream error: %v", err)
 	}
-
-	// Wait for final response
-	time.Sleep(2 * time.Second)
 
 	fmt.Println("\n--- Full Transcript ---")
-	fmt.Println(stream.Transcript())
+	fmt.Println(stream.Text())
 }
