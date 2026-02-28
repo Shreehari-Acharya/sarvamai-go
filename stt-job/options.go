@@ -17,7 +17,7 @@ type InitJobOption func(*initJobRequest) error
 // # Supported Languages
 //
 // Saarika v2.5 (12 languages): unknown (auto), hi-IN, bn-IN, kn-IN, ml-IN, mr-IN,
-// od-IN, pa-IN, ta-IN, te-IN, en-IN, gu-IN
+// or-IN, pa-IN, ta-IN, te-IN, en-IN, gu-IN
 //
 // Saaras v3 (23 languages): All above plus as-IN, ur-IN, ne-IN, kok-IN, ks-IN,
 // sd-IN, sa-IN, sat-IN, mni-IN, brx-IN, mai-IN, doi-IN

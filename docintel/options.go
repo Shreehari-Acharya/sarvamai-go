@@ -40,7 +40,7 @@ func WithOutputFormat(format OutputFormat) docIntelOption {
 //   - kn-IN: Kannada
 //   - ml-IN: Malayalam
 //   - mr-IN: Marathi
-//   - od-IN: Odia
+//   - or-IN: Odia
 //   - pa-IN: Punjabi
 //   - ta-IN: Tamil
 //   - te-IN: Telugu

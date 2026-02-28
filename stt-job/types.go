@@ -52,7 +52,7 @@ type JobParameters struct {
 	// LanguageCode specifies the language of the input audio in BCP-47 format.
 	//
 	// Supported languages for saarika:v2.5 (12 languages):
-	// unknown (auto-detect), hi-IN, bn-IN, kn-IN, ml-IN, mr-IN, od-IN, pa-IN, ta-IN, te-IN, en-IN, gu-IN
+	// unknown (auto-detect), hi-IN, bn-IN, kn-IN, ml-IN, mr-IN, or-IN, pa-IN, ta-IN, te-IN, en-IN, gu-IN
 	//
 	// Additional languages for saaras:v3 (23 languages):
 	// as-IN, ur-IN, ne-IN, kok-IN, ks-IN, sd-IN, sa-IN, sat-IN, mni-IN, brx-IN, mai-IN, doi-IN

@@ -17,7 +17,7 @@ package languages
 //   - kn-IN: Kannada (India)
 //   - ml-IN: Malayalam (India)
 //   - mr-IN: Marathi (India)
-//   - od-IN: Odia (India)
+//   - or-IN: Odia (India)
 //   - pa-IN: Punjabi (India)
 //   - ta-IN: Tamil (India)
 //   - te-IN: Telugu (India)
@@ -64,7 +64,7 @@ var Languages = map[Code]bool{
 	"kn-IN":   true, // Kannada
 	"ml-IN":   true, // Malayalam
 	"mr-IN":   true, // Marathi
-	"od-IN":   true, // Odia
+	"or-IN":   true, // Odia
 	"pa-IN":   true, // Punjabi
 	"ta-IN":   true, // Tamil
 	"te-IN":   true, // Telugu

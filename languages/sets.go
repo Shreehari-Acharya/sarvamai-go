@@ -12,7 +12,7 @@ var MayuraLanguages = map[Code]bool{
 	"kn-IN": true,
 	"ml-IN": true,
 	"mr-IN": true,
-	"od-IN": true,
+	"or-IN": true,
 	"pa-IN": true,
 	"ta-IN": true,
 	"te-IN": true,
@@ -28,7 +28,7 @@ var SarvamTranslateLanguages = map[Code]bool{
 	"kn-IN":  true,
 	"ml-IN":  true,
 	"mr-IN":  true,
-	"od-IN":  true,
+	"or-IN":  true,
 	"pa-IN":  true,
 	"ta-IN":  true,
 	"te-IN":  true,
@@ -57,7 +57,7 @@ var SaarikaLanguages = map[Code]bool{
 	"kn-IN":   true, // Kannada
 	"ml-IN":   true, // Malayalam
 	"mr-IN":   true, // Marathi
-	"od-IN":   true, // Odia
+	"or-IN":   true, // Odia
 	"pa-IN":   true, // Punjabi
 	"ta-IN":   true, // Tamil
 	"te-IN":   true, // Telugu
@@ -73,7 +73,7 @@ var SaarasLanguages = map[Code]bool{
 	"kn-IN":   true, // Kannada
 	"ml-IN":   true, // Malayalam
 	"mr-IN":   true, // Marathi
-	"od-IN":   true, // Odia
+	"or-IN":   true, // Odia
 	"pa-IN":   true, // Punjabi
 	"ta-IN":   true, // Tamil
 	"te-IN":   true, // Telugu
@@ -102,7 +102,7 @@ var TargetLanguages = map[Code]bool{
 	"kn-IN": true, // Kannada
 	"ml-IN": true, // Malayalam
 	"mr-IN": true, // Marathi
-	"od-IN": true, // Odia
+	"or-IN": true, // Odia
 	"pa-IN": true, // Punjabi
 	"ta-IN": true, // Tamil
 	"te-IN": true, // Telugu
@@ -118,7 +118,7 @@ var AllowedDocIntelLanguages = map[Code]bool{
 	"kn-IN":   true, // Kannada
 	"ml-IN":   true, // Malayalam
 	"mr-IN":   true, // Marathi
-	"od-IN":   true, // Odia
+	"or-IN":   true, // Odia
 	"pa-IN":   true, // Punjabi
 	"ta-IN":   true, // Tamil
 	"te-IN":   true, // Telugu
