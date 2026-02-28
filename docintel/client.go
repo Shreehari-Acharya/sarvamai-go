@@ -2,6 +2,7 @@ package docintel
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 )
@@ -51,6 +52,10 @@ type docIntelInitializeRequest struct {
 //	    log.Fatal(err)
 //	}
 //	fmt.Println(resp.JobID)
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/document-intelligence/initialise
 func (c *DocIntelClient) Initialize(ctx context.Context, options ...docIntelOption) (*DocIntelInitializeResponse, error) {
 
 	req := &docIntelInitializeRequest{}
@@ -107,6 +112,10 @@ type docIntelGetUploadLinksRequest struct {
 //	    log.Fatal(err)
 //	}
 //	fmt.Println(resp.UploadUrls["document.pdf"].FileURL)
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/document-intelligence/get-upload-links
 func (c *DocIntelClient) GetUploadLinks(ctx context.Context, jobID string, filename string) (*DocIntelGetUploadLinksResponse, error) {
 
 	if err := validateGetUploadLinksRequest(jobID, filename); err != nil {
@@ -157,6 +166,10 @@ func (c *DocIntelClient) GetUploadLinks(ctx context.Context, jobID string, filen
 //	    log.Fatal(err)
 //	}
 //	fmt.Println(resp.JobState)
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/document-intelligence/start
 func (c *DocIntelClient) Start(ctx context.Context, jobID string) (*DocIntelJobStatusResponse, error) {
 
 	if err := validateJobID(jobID); err != nil {
@@ -165,7 +178,7 @@ func (c *DocIntelClient) Start(ctx context.Context, jobID string) (*DocIntelJobS
 
 	var resp DocIntelJobStatusResponse
 
-	url := "/doc-digitization/job/v1/" + jobID + "/start"
+	url := "/doc-digitization/job/v1/" + url.PathEscape(jobID) + "/start"
 	err := c.transport.DoRequest(
 		ctx,
 		"POST",
@@ -200,6 +213,10 @@ func (c *DocIntelClient) Start(ctx context.Context, jobID string) (*DocIntelJobS
 //	    log.Fatal(err)
 //	}
 //	fmt.Printf("State: %s, Total Pages: %d\n", resp.JobState, resp.JobDetails[0].TotalPages)
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/document-intelligence/get-status
 func (c *DocIntelClient) GetStatus(ctx context.Context, jobID string) (*DocIntelJobStatusResponse, error) {
 
 	if err := validateJobID(jobID); err != nil {
@@ -208,7 +225,7 @@ func (c *DocIntelClient) GetStatus(ctx context.Context, jobID string) (*DocIntel
 
 	var resp DocIntelJobStatusResponse
 
-	url := "/doc-digitization/job/v1/" + jobID + "/status"
+	url := "/doc-digitization/job/v1/" + url.PathEscape(jobID) + "/status"
 
 	err := c.transport.DoRequest(
 		ctx,
@@ -248,6 +265,10 @@ func (c *DocIntelClient) GetStatus(ctx context.Context, jobID string) (*DocIntel
 //	for name, details := range resp.DownloadURLs {
 //	    fmt.Printf("Download %s: %s\n", name, details.FileURL)
 //	}
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/document-intelligence/get-download-links
 func (c *DocIntelClient) GetDownloadLinks(ctx context.Context, jobID string) (*DocIntelGetDownloadLinksResponse, error) {
 
 	if err := validateJobID(jobID); err != nil {
@@ -256,7 +277,7 @@ func (c *DocIntelClient) GetDownloadLinks(ctx context.Context, jobID string) (*D
 
 	var resp DocIntelGetDownloadLinksResponse
 
-	url := "/doc-digitization/job/v1/" + jobID + "/download-files"
+	url := "/doc-digitization/job/v1/" + url.PathEscape(jobID) + "/download-files"
 
 	err := c.transport.DoRequest(
 		ctx,
