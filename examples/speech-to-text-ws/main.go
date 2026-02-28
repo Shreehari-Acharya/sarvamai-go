@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
@@ -30,7 +31,7 @@ func main() {
 	stream, err := client.SpeechToText.TranscribeStream(
 		ctx,
 		"en-IN",
-		stt.WithStreamSampleRate(stt.SampleRate16000),
+		stt.WithStreamSampleRate(speech.SampleRate16000),
 	)
 	if err != nil {
 		log.Fatal("stream error:", err)
@@ -46,7 +47,7 @@ func main() {
 
 	// Send audio in a goroutine
 	go func() {
-		buf := make([]byte, 3200)
+		buf := make([]byte, 32000)
 		for {
 			n, err := file.Read(buf)
 			if err == io.EOF {
