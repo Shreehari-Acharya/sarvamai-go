@@ -2,13 +2,13 @@ package stt
 
 import (
 	"context"
-	"encoding/base64"
 	"io"
 	"net/url"
 	"strconv"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
 // STTClient provides speech-to-text transcription services.
@@ -36,11 +36,11 @@ func NewSTTClient(t *transport.Transport) *STTClient {
 //   - Language: Language code for the audio
 //   - AudioCodec: Audio codec of the input file
 type transcribeRequest struct {
-	File       io.Reader        `form:"-"`                 // Exclude from JSON serialization
-	Model      *Model           `form:"model"`             // Optional model field
-	Mode       *Mode            `form:"mode"`              // Optional mode field
-	Language   *languages.Code  `form:"language_code"`     // Optional language code
-	AudioCodec *InputAudioCodec `form:"input_audio_codec"` // Optional audio codec
+	File       io.Reader               `form:"-"`                 // Exclude from JSON serialization
+	Model      *speech.Model           `form:"model"`             // Optional model field
+	Mode       *speech.Mode            `form:"mode"`              // Optional mode field
+	Language   *languages.Code         `form:"language_code"`     // Optional language code
+	AudioCodec *speech.InputAudioCodec `form:"input_audio_codec"` // Optional audio codec
 }
 
 // Transcribe performs speech-to-text transcription on the provided audio file.
@@ -70,7 +70,7 @@ type transcribeRequest struct {
 //	}
 //	defer audio.Close()
 //
-//	resp, err := client.Transcribe(
+//	resp, err := client.SpeechToText.Transcribe(
 //	    context.Background(),
 //	    audio,
 //	    stt.WithModel(stt.ModelSaarika),
@@ -79,6 +79,10 @@ type transcribeRequest struct {
 //	    log.Fatal(err)
 //	}
 //	fmt.Println(resp.Transcript)
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe
 func (c *STTClient) Transcribe(
 	ctx context.Context,
 	file interface{ Read([]byte) (int, error) },
@@ -135,14 +139,14 @@ func (c *STTClient) Transcribe(
 // For streaming, use 16000 Hz for best compatibility with the API.
 // Other supported rates: 8000, 22050, 24000 Hz.
 type streamTranscribeRequest struct {
-	Language           languages.Code    `json:"language_code,omitempty"`
-	Model              *Model            `json:"model,omitempty"`
-	Mode               *Mode             `json:"mode,omitempty"`
-	SampleRate         *StreamSampleRate `json:"sample_rate,omitempty"`
-	HighVADSensitivity *bool             `json:"high_vad_sensitivity,omitempty"`
-	VADSignals         *bool             `json:"vad_signals,omitempty"`
-	FlushSignal        *bool             `json:"flush_signal,omitempty"`
-	InputAudioCodec    *InputAudioCodec  `json:"input_audio_codec,omitempty"`
+	Language           languages.Code           `json:"language_code,omitempty"`
+	Model              *speech.Model            `json:"model,omitempty"`
+	Mode               *speech.Mode             `json:"mode,omitempty"`
+	SampleRate         *speech.StreamSampleRate `json:"sample_rate,omitempty"`
+	HighVADSensitivity *bool                    `json:"high_vad_sensitivity,omitempty"`
+	VADSignals         *bool                    `json:"vad_signals,omitempty"`
+	FlushSignal        *bool                    `json:"flush_signal,omitempty"`
+	InputAudioCodec    *speech.InputAudioCodec  `json:"input_audio_codec,omitempty"`
 }
 
 // TranscribeStream starts a streaming speech-to-text transcription session.
@@ -158,10 +162,10 @@ type streamTranscribeRequest struct {
 //
 // # Functional Options
 //
-//	WithStreamLanguage(languages.Code)    - Language code for recognition
+//	WithStreamLanguage(languages.Code)    - Language code for recognition (defaults to "unknown")
 //	WithStreamModel(Model)                - Speech recognition model
 //	WithStreamMode(Mode)                  - Processing mode
-//	WithStreamSampleRate(StreamSampleRate) - Audio sample rate
+//	WithStreamSampleRate(StreamSampleRate) - Audio sample rate (defaults to 16000)
 //	WithStreamHighVADSensitivity(bool)    - Enable high VAD sensitivity
 //	WithStreamVADSignals(bool)            - Receive VAD signals
 //	WithStreamFlushSignal(bool)           - Enable flush signals
@@ -178,7 +182,7 @@ type streamTranscribeRequest struct {
 //
 // # Example
 //
-//	stream, err := client.TranscribeStream(
+//	stream, err := client.SpeechToText.TranscribeStream(
 //	    context.Background(),
 //	    stt.WithStreamLanguage(languages.CodeEnIN),
 //	    stt.WithStreamModel(stt.ModelSaarika),
@@ -215,11 +219,15 @@ type streamTranscribeRequest struct {
 //
 //	// Or get all accumulated text at once
 //	fmt.Println(stream.Text())
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe/ws
 func (c *STTClient) TranscribeStream(
 	ctx context.Context,
 	language languages.Code,
 	opts ...StreamOption,
-) (*STTStream, error) {
+) (*speech.Stream, error) {
 
 	cfg := &streamTranscribeRequest{
 		Language: language,
@@ -231,16 +239,17 @@ func (c *STTClient) TranscribeStream(
 		}
 	}
 
+	// Set default language before validation
+	if cfg.Language == "" {
+		cfg.Language = languages.Code("unknown")
+	}
+
 	if err := validateStreamConfig(cfg); err != nil {
 		return nil, err
 	}
 
 	query := url.Values{}
 
-	if cfg.Language == "" {
-		lang := languages.Code("unknown")
-		cfg.Language = lang
-	}
 	query.Set("language-code", string(cfg.Language))
 
 	if cfg.Model != nil {
@@ -270,33 +279,12 @@ func (c *STTClient) TranscribeStream(
 		return nil, err
 	}
 
-	stream := NewSTTStream(wsConn, *cfg.SampleRate)
+	sampleRate := speech.SampleRate16000
+	if cfg.SampleRate != nil {
+		sampleRate = *cfg.SampleRate
+	}
+
+	stream := speech.NewStream(wsConn, sampleRate)
 
 	return stream, nil
-}
-
-// SendAudio sends audio data to the streaming transcription.
-// Audio should be PCM format at the sample rate specified in StreamConfig.
-func (s *STTStream) SendAudio(pcm []byte) error {
-	payload := map[string]any{
-		"audio": map[string]any{
-			"data":        base64.StdEncoding.EncodeToString(pcm),
-			"sample_rate": strconv.Itoa(int(s.sampleRate)),
-			"encoding":    "audio/wav",
-		},
-	}
-
-	return s.ws.WriteJSON(payload)
-}
-
-// Flush signals the end of the current audio segment.
-// Call this after sending audio to get the final transcription for that segment.
-func (s *STTStream) Flush() error {
-	if s.flushSent {
-		return nil // Prevent multiple flush signals
-	}
-	s.flushSent = true
-	return s.ws.WriteJSON(map[string]string{
-		"type": "flush",
-	})
 }
