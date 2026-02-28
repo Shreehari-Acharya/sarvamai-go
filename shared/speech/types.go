@@ -335,9 +335,9 @@ type Callback struct {
 type ContainerType string
 
 const (
-	ContainerTypeS3      ContainerType = "Azure"
-	ContainerTypeGCS     ContainerType = "Local"
-	ContainerTypeAzure   ContainerType = "Google"
+	ContainerTypeAzure   ContainerType = "Azure"
+	ContainerTypeLocal   ContainerType = "Local"
+	ContainerTypeGCS     ContainerType = "Google"
 	ContainerTypeAzureV1 ContainerType = "Azure_V1"
 )
 
@@ -365,9 +365,9 @@ type FileDetail struct {
 }
 
 type JobDetail struct {
-	Inputs        *FileDetail `json:"inputs,omitempty"`
-	Outputs       *FileDetail `json:"outputs,omitempty"`
-	State         *FileState  `json:"state,omitempty"`
-	ErrorMessage  *string     `json:"error_message,omitempty"`
-	ExceptionName *string     `json:"exception_name,omitempty"`
+	Inputs        []FileDetail `json:"inputs,omitempty"`
+	Outputs       []FileDetail `json:"outputs,omitempty"`
+	State         *FileState   `json:"state,omitempty"`
+	ErrorMessage  *string      `json:"error_message,omitempty"`
+	ExceptionName *string      `json:"exception_name,omitempty"`
 }

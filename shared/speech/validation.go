@@ -31,7 +31,7 @@ func ValidateMode(model *Model, mode *Mode) error {
 		return nil
 	}
 
-	spec, err := GetModelSpec(model, false)
+	spec, err := GetModelSpec(model, true)
 	if err != nil {
 		return err
 	}
