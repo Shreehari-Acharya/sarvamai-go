@@ -55,8 +55,12 @@ type translateRequest struct {
 //
 // # Example
 //
-//	resp, err := client.Translate(ctx, "Hello", "en-IN", "hi-IN")
+//	resp, err := client.Text.Translate(ctx, "Hello", "en-IN", "hi-IN")
 //	// resp.TranslatedText = "नमस्ते"
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/text/translate-text
 func (c *TextClient) Translate(
 	ctx context.Context,
 	input string,
@@ -127,8 +131,12 @@ type transliterateRequest struct {
 //
 // # Example
 //
-//	resp, err := client.Transliterate(ctx, "Hello", "en-IN", "hi-IN")
+//	resp, err := client.Text.Transliterate(ctx, "Hello", "en-IN", "hi-IN")
 //	// resp.TransliteratedText = "हैलो"
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/text/transliterate-text
 func (c *TextClient) Transliterate(ctx context.Context,
 	input string,
 	sourceLang languages.Code,
@@ -184,9 +192,13 @@ type detectLanguageRequest struct {
 //
 // # Example
 //
-//	resp, err := client.DetectLanguage(ctx, "नमस्ते")
+//	resp, err := client.Text.DetectLanguage(ctx, "नमस्ते")
 //	// resp.LanguageCode = "hi-IN"
 //	// resp.ScriptCode = "Deva"
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/text/identify-language
 func (c *TextClient) DetectLanguage(ctx context.Context,
 	input string,
 ) (*DetectLanguageResponse, error) {
