@@ -186,7 +186,7 @@ func TestOptionValidationBulbulV2Errors(t *testing.T) {
 				WithModel(BulbulV2),
 				WithPace(3.5),
 			},
-			wantErr: "pace: pace must be between 0.3 and 3.0",
+			wantErr: "pace: pace must be between 0.3 and 3.0 for bulbul:v2",
 		},
 		{
 			name: "bulbul:v2 with pace out of range (too slow)",
@@ -194,7 +194,7 @@ func TestOptionValidationBulbulV2Errors(t *testing.T) {
 				WithModel(BulbulV2),
 				WithPace(0.1),
 			},
-			wantErr: "pace: pace must be between 0.3 and 3.0",
+			wantErr: "pace: pace must be between 0.3 and 3.0 for bulbul:v2",
 		},
 	}
 
@@ -608,20 +608,3 @@ func TestTextValidation(t *testing.T) {
 		})
 	}
 }
-
-// // Helper functions
-// func ptrModel(m Model) *Model {
-// 	return &m
-// }
-
-// func ptrSpeakerVoice(v SpeakerVoice) *SpeakerVoice {
-// 	return &v
-// }
-
-// func ptrFloat64(f float64) *float64 {
-// 	return &f
-// }
-
-// func ptrSpeechSampleRate(s SpeechSampleRate) *SpeechSampleRate {
-// 	return &s
-// }

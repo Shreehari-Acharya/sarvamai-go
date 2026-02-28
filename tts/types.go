@@ -167,7 +167,7 @@ const (
 
 // ConvertResponse represents a text-to-speech conversion response.
 type ConvertResponse struct {
-	RequestId string   `json:"request_id"`
+	RequestId string   `json:"request_id,omitempty"`
 	Audios    []string `json:"audios"`
 }
 

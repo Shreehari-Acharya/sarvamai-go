@@ -48,44 +48,27 @@ func WithSpeakerVoice(voice SpeakerVoice) option {
 }
 
 // WithPitch sets the speech pitch adjustment.
-// Range: -0.75 to 0.75
+// Note: Only supported for Bulbul:v2.
 func WithPitch(pitch float64) option {
 	return func(r *ttsRequest) error {
-		if pitch < -0.75 || pitch > 0.75 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "pitch",
-				Message: "pitch must be between -0.75 and 0.75",
-			}
-		}
 		r.Pitch = &pitch
 		return nil
 	}
 }
 
 // WithPace sets the speech speed.
+// Note: Model-specific range (0.3-3.0 for v2, 0.5-2.0 for v3)
 func WithPace(pace float64) option {
 	return func(r *ttsRequest) error {
-		if pace < 0.3 || pace > 3.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "pace",
-				Message: "pace must be between 0.3 and 3.0",
-			}
-		}
 		r.Pace = &pace
 		return nil
 	}
 }
 
 // WithLoudness sets the speech volume.
-// Range: 0.3 to 3.0
+// Note: Only supported for Bulbul:v2.
 func WithLoudness(loudness float64) option {
 	return func(r *ttsRequest) error {
-		if loudness < 0.3 || loudness > 3.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "loudness",
-				Message: "loudness must be between 0.3 and 3.0",
-			}
-		}
 		r.Loudness = &loudness
 		return nil
 	}
@@ -116,15 +99,9 @@ func WithEnablePreprocessing(enable bool) option {
 }
 
 // WithTemperature controls how much randomness and expressiveness the TTS model uses.
-// Range: 0.01 to 2.0
+// Note: Only supported for Bulbul:v3.
 func WithTemperature(temp float64) option {
 	return func(r *ttsRequest) error {
-		if temp < 0.01 || temp > 2.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "temperature",
-				Message: "temperature must be between 0.01 and 2.0",
-			}
-		}
 		r.Temperature = &temp
 		return nil
 	}
@@ -186,59 +163,36 @@ func WithStreamSendCompletionEvent(enable bool) streamOption {
 }
 
 // WithStreamPitch sets the speech pitch for streaming.
-// Range: -0.75 to 0.75
+// Note: Only supported for Bulbul:v2.
 func WithStreamPitch(pitch float64) streamOption {
 	return func(c *ttsStreamRequest) error {
-		if pitch < -0.75 || pitch > 0.75 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "pitch",
-				Message: "pitch must be between -0.75 and 0.75",
-			}
-		}
 		c.Pitch = &pitch
 		return nil
 	}
 }
 
 // WithStreamPace sets the speech speed for streaming.
+// Note: Model-specific range (0.3-3.0 for v2, 0.5-2.0 for v3-beta)
 func WithStreamPace(pace float64) streamOption {
 	return func(c *ttsStreamRequest) error {
-		if pace < 0.3 || pace > 3.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "pace",
-				Message: "pace must be between 0.3 and 3.0",
-			}
-		}
 		c.Pace = &pace
 		return nil
 	}
 }
 
 // WithStreamLoudness sets the speech volume for streaming.
-// Range: 0.3 to 3.0
+// Note: Only supported for Bulbul:v2.
 func WithStreamLoudness(loudness float64) streamOption {
 	return func(c *ttsStreamRequest) error {
-		if loudness < 0.3 || loudness > 3.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "loudness",
-				Message: "loudness must be between 0.3 and 3.0",
-			}
-		}
 		c.Loudness = &loudness
 		return nil
 	}
 }
 
 // WithStreamTemperature sets the temperature for streaming.
-// Range: 0.01 to 1.0
+// Note: Only supported for Bulbul:v3-beta.
 func WithStreamTemperature(temp float64) streamOption {
 	return func(c *ttsStreamRequest) error {
-		if temp < 0.01 || temp > 1.0 {
-			return &sarvamaierrors.ValidationError{
-				Field:   "temperature",
-				Message: "temperature must be between 0.01 and 1.0",
-			}
-		}
 		c.Temperature = &temp
 		return nil
 	}
@@ -252,6 +206,7 @@ func WithStreamSampleRate(rate SpeechSampleRate) streamOption {
 	}
 }
 
+// WithStreamEnablePreprocessing enables text preprocessing for streaming.
 func WithStreamEnablePreprocessing(enable bool) streamOption {
 	return func(c *ttsStreamRequest) error {
 		c.EnablePreprocessing = &enable

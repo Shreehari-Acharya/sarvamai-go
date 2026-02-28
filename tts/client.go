@@ -52,7 +52,7 @@ type ttsRequest struct {
 //
 // # Example
 //
-//	resp, err := client.Convert(
+//	resp, err := client.TextToSpeech.Convert(
 //	    ctx,
 //	    "Hello, yeh ek sarvam ai text to speech conversion ka example hai.",
 //	    "hi-IN",
@@ -71,6 +71,10 @@ type ttsRequest struct {
 //	    }
 //	    os.WriteFile(fmt.Sprintf("output_%d.mp3", i), decodedAudio, 0644)
 //	}
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/text-to-speech/convert
 func (c *TTSClient) Convert(
 	ctx context.Context,
 	text string,
@@ -143,7 +147,7 @@ type ttsStreamRequest struct {
 //
 // # Example
 //
-//	stream, err := client.StreamConvert(
+//	stream, err := client.TextToSpeech.StreamConvert(
 //	    ctx,
 //	    "hi-IN",
 //	    tts.WithStreamSpeaker(tts.SpeakerPriya),
@@ -172,9 +176,9 @@ type ttsStreamRequest struct {
 //	    _ = decodedAudio
 //	}
 //
-//	if err := stream.Err(); err != nil {
-//	    log.Fatal(err)
-//	}
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/text-to-speech/stream
 func (c *TTSClient) StreamConvert(
 	ctx context.Context,
 	targetLanguage languages.Code,
