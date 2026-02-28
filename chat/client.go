@@ -72,7 +72,7 @@ type chatRequest struct {
 //
 // # Example (using helper functions)
 //
-//	resp, err := client.Completions(
+//	resp, err := client.Chat.Completions(
 //	    context.Background(),
 //	    chat.ModelSarvamM,
 //	    []chat.ChatMessage{
@@ -95,6 +95,10 @@ type chatRequest struct {
 //	for _, choice := range resp.Choices {
 //	    fmt.Println(choice.Message.Content)
 //	}
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/chat/chat-completions
 func (c *ChatClient) Completions(
 	ctx context.Context,
 	model string,
@@ -114,9 +118,13 @@ func (c *ChatClient) Completions(
 		}
 	}
 
+	err := validateChatRequest(req.Model, req.Messages)
+	if err != nil {
+		return nil, err
+	}
 	var resp ChatResponse
 
-	err := c.transport.DoRequest(
+	err = c.transport.DoRequest(
 		ctx,
 		"POST",
 		"/v1/chat/completions",
@@ -150,7 +158,7 @@ func (c *ChatClient) Completions(
 //
 // # Example
 //
-//	stream, err := client.StreamCompletions(
+//	stream, err := client.Chat.StreamCompletions(
 //	    context.Background(),
 //	    chat.ModelSarvamM,
 //	    []chat.ChatMessage{
@@ -179,6 +187,10 @@ func (c *ChatClient) Completions(
 //
 //	// Or get all accumulated text at once
 //	fmt.Println(stream.Text())
+//
+// # API Reference
+//
+// https://docs.sarvam.ai/api-reference-docs/chat/chat-completions/
 func (c *ChatClient) StreamCompletions(
 	ctx context.Context,
 	model string,
@@ -199,6 +211,11 @@ func (c *ChatClient) StreamCompletions(
 		if err := opt(req); err != nil {
 			return nil, err
 		}
+	}
+
+	err := validateChatRequest(req.Model, req.Messages)
+	if err != nil {
+		return nil, err
 	}
 
 	resp, err := c.transport.DoStreamRequest(
