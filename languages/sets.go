@@ -49,7 +49,7 @@ var SarvamTranslateLanguages = map[Code]bool{
 // Transliterate languages - 12 languages + auto (same as Mayura)
 var TransliterateLanguages = MayuraLanguages
 
-// Saarika languages - 12 languages + unknown (for STT)
+// Saarika languages - 12 languages + unknown (for Speech services)
 var SaarikaLanguages = map[Code]bool{
 	"unknown": true, // auto-detect
 	"hi-IN":   true, // Hindi
@@ -65,7 +65,7 @@ var SaarikaLanguages = map[Code]bool{
 	"gu-IN":   true, // Gujarati
 }
 
-// Saaras languages - 22 languages + unknown (for STT)
+// Saaras languages - 22 languages - Saarika languages + 11 other languages (for Speech services)
 var SaarasLanguages = map[Code]bool{
 	"unknown": true, // auto-detect
 	"hi-IN":   true, // Hindi
