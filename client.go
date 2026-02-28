@@ -7,7 +7,10 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/docintel"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
+	sttjob "github.com/Shreehari-Acharya/sarvam-go-sdk/stt-job"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/translate"
+	translatejob "github.com/Shreehari-Acharya/sarvam-go-sdk/translate-job"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/tts"
 )
 
@@ -45,11 +48,14 @@ import (
 type Client struct {
 	transport *transport.Transport
 
-	Text                 *text.TextClient
-	SpeechToText         *stt.STTClient
-	TextToSpeech         *tts.TTSClient
-	Chat                 *chat.ChatClient
-	DocumentIntelligence *docintel.DocIntelClient
+	Text                     *text.TextClient
+	SpeechToText             *stt.STTClient
+	SpeechToTextTranslate    *translate.TranslateClient
+	SpeechToTextJob          *sttjob.SttJobClient
+	SpeechToTextTranslateJob *translatejob.TranslateJobClient
+	TextToSpeech             *tts.TTSClient
+	Chat                     *chat.ChatClient
+	DocumentIntelligence     *docintel.DocIntelClient
 }
 
 // NewClient creates a new Sarvam AI client with the given configuration.
@@ -96,6 +102,9 @@ func NewClient(cfg Config) (*Client, error) {
 
 	c.Text = text.NewTextClient(t)
 	c.SpeechToText = stt.NewSTTClient(t)
+	c.SpeechToTextTranslate = translate.NewTranslateClient(t)
+	c.SpeechToTextJob = sttjob.NewSttJobClient(t)
+	c.SpeechToTextTranslateJob = translatejob.NewTranslateJobClient(t)
 	c.TextToSpeech = tts.NewTTSClient(t)
 	c.Chat = chat.NewChatClient(t)
 	c.DocumentIntelligence = docintel.NewDocIntelClient(t)
