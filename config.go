@@ -26,10 +26,12 @@ import (
 //   - APIKey: Your Sarvam AI API key. Required. Get one at https://dashboard.sarvam.ai/key-management
 //   - BaseURL: The base URL for the API. Defaults to "https://api.sarvam.ai" if empty.
 //   - HTTPClient: The HTTP client to use for requests. Defaults to a 30-second timeout if nil.
+//   - MaxRetries: Maximum number of retries for transient errors (429, 5xx). Defaults to 3 if <= 0.
 type Config struct {
 	APIKey     string
 	BaseURL    string
 	HTTPClient *http.Client
+	MaxRetries int
 }
 
 func defaultConfig() Config {
@@ -38,5 +40,6 @@ func defaultConfig() Config {
 		HTTPClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
+		MaxRetries: 3,
 	}
 }

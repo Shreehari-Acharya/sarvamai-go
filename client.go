@@ -90,10 +90,15 @@ func NewClient(cfg Config) (*Client, error) {
 		cfg.HTTPClient = def.HTTPClient
 	}
 
+	if cfg.MaxRetries <= 0 {
+		cfg.MaxRetries = def.MaxRetries
+	}
+
 	t := &transport.Transport{
 		APIKey:     cfg.APIKey,
 		BaseURL:    cfg.BaseURL,
 		HTTPClient: cfg.HTTPClient,
+		MaxRetries: cfg.MaxRetries,
 	}
 
 	c := &Client{
