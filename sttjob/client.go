@@ -103,9 +103,7 @@ func (c *SttJobClient) Initialize(ctx context.Context,
 	req := &initJobRequest{}
 
 	for _, option := range options {
-		if err := option(req); err != nil {
-			return nil, err
-		}
+		option(req)
 	}
 
 	if err := validateInitJobRequest(req); err != nil {
@@ -259,9 +257,7 @@ func (c *SttJobClient) Start(ctx context.Context,
 	}
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateStartJobRequest(req); err != nil {

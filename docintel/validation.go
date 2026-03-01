@@ -91,6 +91,11 @@ func validateInitializeRequest(req *docIntelInitializeRequest) error {
 			return err
 		}
 	}
+	if req.Callback != nil {
+		if err := validateCallbackURL(req.Callback.URL); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

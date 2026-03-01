@@ -506,13 +506,13 @@ func TestWithLanguage(t *testing.T) {
 			name:    "invalid language fr-FR should error",
 			lang:    languages.Code("fr-FR"),
 			wantErr: true,
-			errMsg:  "invalid language code",
+			errMsg:  "is not supported by",
 		},
 		{
 			name:    "invalid language zh-CN should error",
 			lang:    languages.Code("zh-CN"),
 			wantErr: true,
-			errMsg:  "invalid language code",
+			errMsg:  "is not supported by",
 		},
 	}
 
@@ -520,7 +520,8 @@ func TestWithLanguage(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &initJobRequest{}
 			opt := WithLanguage(tt.lang)
-			err := opt(req)
+			opt(req)
+			err := validateInitJobRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -568,7 +569,8 @@ func TestWithModel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &initJobRequest{}
 			opt := WithModel(tt.model)
-			err := opt(req)
+			opt(req)
+			err := validateInitJobRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -620,7 +622,8 @@ func TestWithCallback(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &initJobRequest{}
 			opt := WithCallback(tt.url, tt.authToken)
-			err := opt(req)
+			opt(req)
+			err := validateInitJobRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -662,11 +665,8 @@ func TestWithPtuID(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &startJobRequest{}
 			opt := WithPtuID(tt.ptuID)
-			err := opt(req)
+			opt(req)
 
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
 			if req.PtuID == nil || *req.PtuID != tt.ptuID {
 				t.Errorf("expected ptuID %d, got %v", tt.ptuID, req.PtuID)
 			}

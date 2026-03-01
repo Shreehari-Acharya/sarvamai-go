@@ -5,7 +5,7 @@ import (
 )
 
 // docIntelOption is a functional option for configuring a Document Intelligence job.
-type docIntelOption func(*docIntelInitializeRequest) error
+type docIntelOption func(*docIntelInitializeRequest)
 
 // WithOutputFormat sets the output format for the extracted document content.
 //
@@ -18,12 +18,11 @@ type docIntelOption func(*docIntelInitializeRequest) error
 //
 // Default: OutputFormatMD (Markdown)
 func WithOutputFormat(format OutputFormat) docIntelOption {
-	return func(req *docIntelInitializeRequest) error {
+	return func(req *docIntelInitializeRequest) {
 		if req.JobParameters == nil {
 			req.JobParameters = &JobParameters{}
 		}
 		req.JobParameters.OutputFormat = &format
-		return nil
 	}
 }
 
@@ -59,12 +58,11 @@ func WithOutputFormat(format OutputFormat) docIntelOption {
 //
 // Default: hi-IN (Hindi)
 func WithLanguage(language languages.Code) docIntelOption {
-	return func(req *docIntelInitializeRequest) error {
+	return func(req *docIntelInitializeRequest) {
 		if req.JobParameters == nil {
 			req.JobParameters = &JobParameters{}
 		}
 		req.JobParameters.Language = &language
-		return nil
 	}
 }
 
@@ -87,14 +85,10 @@ func WithLanguage(language languages.Code) docIntelOption {
 //	    docintel.WithCallback("https://example.com/webhook", &authToken),
 //	)
 func WithCallback(callbackURL string, authToken *string) docIntelOption {
-	return func(req *docIntelInitializeRequest) error {
-		if err := validateCallbackURL(callbackURL); err != nil {
-			return err
-		}
+	return func(req *docIntelInitializeRequest) {
 		req.Callback = &Callback{
 			URL:       callbackURL,
 			AuthToken: authToken,
 		}
-		return nil
 	}
 }

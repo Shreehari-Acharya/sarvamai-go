@@ -89,9 +89,7 @@ func (c *TTSClient) Convert(
 
 	// Apply options
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	// Validate
@@ -191,9 +189,7 @@ func (c *TTSClient) StreamConvert(
 
 	// Apply options
 	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
-			return nil, err
-		}
+		opt(cfg)
 	}
 
 	// Validate

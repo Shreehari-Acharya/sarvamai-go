@@ -98,9 +98,7 @@ func (c *TranslateClient) Translate(
 	}
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateTranslateRequest(req); err != nil {
@@ -201,9 +199,11 @@ func (c *TranslateClient) TranslateStream(
 	cfg := &streamTranslateRequest{}
 
 	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
-			return nil, err
-		}
+		opt(cfg)
+	}
+
+	if err := validateTranslateStreamRequest(cfg); err != nil {
+		return nil, err
 	}
 
 	query := url.Values{}

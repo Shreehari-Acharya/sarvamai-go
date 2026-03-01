@@ -6,12 +6,21 @@ import (
 )
 
 func validateInitJobRequest(req *initJobRequest) error {
-
 	model := req.JobParameters.Model
 	mode := req.JobParameters.Mode
 	language := req.JobParameters.LanguageCode
 	withDiarization := req.JobParameters.WithDiarization
 	numSpeakers := req.JobParameters.NumSpeakers
+
+	if model != nil {
+		m := *model
+		if m != speech.ModelSaarika && m != speech.ModelSaaras {
+			return &sarvamaierrors.ValidationError{
+				Field:   "model",
+				Message: "invalid model. supported models are saarika:v2.5 and saaras:v3",
+			}
+		}
+	}
 
 	if err := speech.ValidateMode(model, mode); err != nil {
 		return err
@@ -28,6 +37,15 @@ func validateInitJobRequest(req *initJobRequest) error {
 			return &sarvamaierrors.ValidationError{
 				Field:   "num_speakers",
 				Message: "num_speakers is only applicable when with_diarization is true",
+			}
+		}
+	}
+
+	if req.Callback != nil {
+		if req.Callback.URL == "" {
+			return &sarvamaierrors.ValidationError{
+				Field:   "callback_url",
+				Message: "callback URL cannot be empty",
 			}
 		}
 	}

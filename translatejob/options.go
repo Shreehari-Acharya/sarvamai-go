@@ -1,12 +1,11 @@
 package translatejob
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
 // initJobOption is a functional option for configuring an Initialize request.
-type initJobOption func(*initJobRequest) error
+type initJobOption func(*initJobRequest)
 
 // WithPrompt sets an optional prompt to assist the transcription.
 //
@@ -17,9 +16,8 @@ type initJobOption func(*initJobRequest) error
 //
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithPrompt("This is a medical transcription"))
 func WithPrompt(prompt string) initJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.Prompt = &prompt
-		return nil
 	}
 }
 
@@ -32,9 +30,8 @@ func WithPrompt(prompt string) initJobOption {
 //
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithModel(speech.ModelSaarasV25))
 func WithModel(model speech.Model) initJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.Model = &model
-		return nil
 	}
 }
 
@@ -47,9 +44,8 @@ func WithModel(model speech.Model) initJobOption {
 //
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithPtuId(1))
 func WithPtuId(ptuId int) initJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.PtuID = &ptuId
-		return nil
 	}
 }
 
@@ -63,9 +59,8 @@ func WithPtuId(ptuId int) initJobOption {
 //
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithDiarization(true))
 func WithDiarization(withDiarization bool) initJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.WithDiarization = &withDiarization
-		return nil
 	}
 }
 
@@ -78,9 +73,8 @@ func WithDiarization(withDiarization bool) initJobOption {
 //
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithDiarization(true), translatejob.WithNumSpeakers(2))
 func WithNumSpeakers(numSpeakers int) initJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.NumSpeakers = &numSpeakers
-		return nil
 	}
 }
 
@@ -100,23 +94,16 @@ func WithNumSpeakers(numSpeakers int) initJobOption {
 //	token := "optional-auth-token"
 //	client.SpeechToTextTranslateJob.Initialize(ctx, translatejob.WithCallback("https://myapp.com/callback", &token))
 func WithCallback(callbackURL string, authToken *string) initJobOption {
-	return func(req *initJobRequest) error {
-		if callbackURL == "" {
-			return &sarvamaierrors.ValidationError{
-				Field:   "callback_url",
-				Message: "callback URL cannot be empty",
-			}
-		}
+	return func(req *initJobRequest) {
 		req.Callback = &speech.Callback{
 			URL:       callbackURL,
 			AuthToken: authToken,
 		}
-		return nil
 	}
 }
 
 // getUploadLinksOption is a functional option for configuring a GetUploadLinks request.
-type getUploadLinksOption func(*getUploadLinksRequest) error
+type getUploadLinksOption func(*getUploadLinksRequest)
 
 // WithGetUploadLinksPtuId sets the PTU ID for the upload links request.
 //
@@ -124,14 +111,13 @@ type getUploadLinksOption func(*getUploadLinksRequest) error
 //
 //	client.SpeechToTextTranslateJob.GetUploadLinks(ctx, jobID, files, translatejob.WithGetUploadLinksPtuId(1))
 func WithGetUploadLinksPtuId(ptuId int) getUploadLinksOption {
-	return func(req *getUploadLinksRequest) error {
+	return func(req *getUploadLinksRequest) {
 		req.PtuID = &ptuId
-		return nil
 	}
 }
 
 // startJobOption is a functional option for configuring a Start request.
-type startJobOption func(*startJobRequest) error
+type startJobOption func(*startJobRequest)
 
 // WithStartJobPtuId sets the PTU ID for the start job request.
 //
@@ -139,14 +125,13 @@ type startJobOption func(*startJobRequest) error
 //
 //	client.SpeechToTextTranslateJob.Start(ctx, jobID, translatejob.WithStartJobPtuId(1))
 func WithStartJobPtuId(ptuId int) startJobOption {
-	return func(req *startJobRequest) error {
+	return func(req *startJobRequest) {
 		req.PtuID = &ptuId
-		return nil
 	}
 }
 
 // getDownloadLinksOption is a functional option for configuring a GetDownloadLinks request.
-type getDownloadLinksOption func(*getDownloadLinksRequest) error
+type getDownloadLinksOption func(*getDownloadLinksRequest)
 
 // WithGetDownloadLinksPtuId sets the PTU ID for the download links request.
 //
@@ -154,8 +139,7 @@ type getDownloadLinksOption func(*getDownloadLinksRequest) error
 //
 //	client.SpeechToTextTranslateJob.GetDownloadLinks(ctx, jobID, files, translatejob.WithGetDownloadLinksPtuId(1))
 func WithGetDownloadLinksPtuId(ptuId int) getDownloadLinksOption {
-	return func(req *getDownloadLinksRequest) error {
+	return func(req *getDownloadLinksRequest) {
 		req.PtuID = &ptuId
-		return nil
 	}
 }

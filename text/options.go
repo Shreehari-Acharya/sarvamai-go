@@ -2,15 +2,14 @@ package text
 
 // options for translate API
 
-type translateOption func(*translateRequest) error
+type translateOption func(*translateRequest)
 
 // WithSpeakerGender sets the desired speaker gender.
 // This influences the translation style based on the specified gender.
 // Options: GenderMale = "Male", GenderFemale = "Female".
 func WithSpeakerGender(gender SpeakerGender) translateOption {
-	return func(req *translateRequest) error {
+	return func(req *translateRequest) {
 		req.SpeakerGender = &gender
-		return nil
 	}
 }
 
@@ -28,9 +27,8 @@ func WithSpeakerGender(gender SpeakerGender) translateOption {
 //
 // Default - ModeFormal
 func WithMode(mode TranslateMode) translateOption {
-	return func(req *translateRequest) error {
+	return func(req *translateRequest) {
 		req.Mode = &mode
-		return nil
 	}
 }
 
@@ -39,9 +37,8 @@ func WithMode(mode TranslateMode) translateOption {
 //   - Mayura: The latest translation model with support for all modes and features
 //   - sarvam-translate:v1: An older model that only supports formal translation mode
 func WithModel(model TranslateModel) translateOption {
-	return func(req *translateRequest) error {
+	return func(req *translateRequest) {
 		req.Model = &model
-		return nil
 	}
 }
 
@@ -57,9 +54,8 @@ func WithModel(model TranslateModel) translateOption {
 //
 // Default - OutputScriptNull (no transliteration)
 func WithOutputScript(script OutputScript) translateOption {
-	return func(req *translateRequest) error {
+	return func(req *translateRequest) {
 		req.OutputScript = &script
-		return nil
 	}
 }
 
@@ -70,15 +66,14 @@ func WithOutputScript(script OutputScript) translateOption {
 // NumeralsNative: Uses language-specific native numerals.
 // Default - international
 func WithNumeralsFormat(format NumeralsFormat) translateOption {
-	return func(req *translateRequest) error {
+	return func(req *translateRequest) {
 		req.NumeralsFormat = &format
-		return nil
 	}
 }
 
 // options for transliteration API
 
-type transliterationOption func(*transliterateRequest) error
+type transliterationOption func(*transliterateRequest)
 
 // WithNumeralsFormatTransliteration sets the desired format for numerals in the transliterated output.
 // Options:
@@ -86,9 +81,8 @@ type transliterationOption func(*transliterateRequest) error
 // NumeralsNative: Uses language-specific native numerals.
 // Default - international
 func WithNumeralsFormatTransliteration(format NumeralsFormat) transliterationOption {
-	return func(req *transliterateRequest) error {
+	return func(req *transliterateRequest) {
 		req.NumeralsFormat = &format
-		return nil
 	}
 }
 
@@ -102,9 +96,8 @@ func WithNumeralsFormatTransliteration(format NumeralsFormat) transliterationOpt
 // SpokenFormNumeralsNative: Use the target language's native rules for spoken form numerals.
 // Default - SpokenFormNumeralsNative (use the target language's native rules)
 func WithSpokenFormNumeralsLanguage(lang SpokenFormNumeralsLanguage) transliterationOption {
-	return func(req *transliterateRequest) error {
+	return func(req *transliterateRequest) {
 		req.SpokenFormNumeralsLanguage = &lang
-		return nil
 	}
 }
 
@@ -113,8 +106,7 @@ func WithSpokenFormNumeralsLanguage(lang SpokenFormNumeralsLanguage) translitera
 // For example, if the input text contains "2024" and the target language is Hindi with spoken form enabled,
 // the output will convert "2024" to "दो हजार चौबीस" instead of keeping it as "2024".
 func WithSpokenForm(spokenForm bool) transliterationOption {
-	return func(req *transliterateRequest) error {
+	return func(req *transliterateRequest) {
 		req.SpokenForm = &spokenForm
-		return nil
 	}
 }

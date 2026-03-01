@@ -61,9 +61,7 @@ func (c *DocIntelClient) Initialize(ctx context.Context, options ...docIntelOpti
 	req := &docIntelInitializeRequest{}
 
 	for _, option := range options {
-		if err := option(req); err != nil {
-			return nil, err
-		}
+		option(req)
 	}
 
 	if err := validateInitializeRequest(req); err != nil {

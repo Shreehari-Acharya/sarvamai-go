@@ -15,9 +15,7 @@ func TestOptionValidation(t *testing.T) {
 			WithSpeakerVoice(SpeakerShubh),
 		}
 		for _, opt := range opts {
-			if err := opt(req); err != nil {
-				t.Errorf("option failed: %v", err)
-			}
+			opt(req)
 		}
 		if err := validateTTSRequest(req); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -37,9 +35,7 @@ func TestOptionValidation(t *testing.T) {
 			WithPace(1.0),
 		}
 		for _, opt := range opts {
-			if err := opt(req); err != nil {
-				t.Errorf("option failed: %v", err)
-			}
+			opt(req)
 		}
 		if err := validateTTSRequest(req); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -55,9 +51,7 @@ func TestOptionValidation(t *testing.T) {
 			WithSpeakerVoice(SpeakerShubh),
 		}
 		for _, opt := range opts {
-			if err := opt(req); err != nil {
-				t.Errorf("option failed: %v", err)
-			}
+			opt(req)
 		}
 		if err := validateTTSRequest(req); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -120,15 +114,7 @@ func TestOptionValidationBulbulV3Errors(t *testing.T) {
 				TargetLanguageCode: "en-IN",
 			}
 			for _, opt := range tt.opts {
-				if err := opt(req); err != nil {
-					if tt.name == "bulbul:v2 speaker with bulbul:v3 should error" || tt.name == "bulbul:v3 speaker with bulbul:v2 should error" {
-						if err.Error() != tt.wantErr {
-							t.Errorf("got %q, want %q", err.Error(), tt.wantErr)
-						}
-						return
-					}
-					t.Skipf("option error (expected in some cases): %v", err)
-				}
+				opt(req)
 			}
 			err := validateTTSRequest(req)
 			if err == nil {
@@ -205,12 +191,7 @@ func TestOptionValidationBulbulV2Errors(t *testing.T) {
 				TargetLanguageCode: "en-IN",
 			}
 			for _, opt := range tt.opts {
-				if err := opt(req); err != nil {
-					if err.Error() == tt.wantErr {
-						return
-					}
-					t.Skipf("option error (expected in some cases): %v", err)
-				}
+				opt(req)
 			}
 			err := validateTTSRequest(req)
 			if err == nil {
@@ -287,9 +268,7 @@ func TestOptionValidationBulbulV3(t *testing.T) {
 				TargetLanguageCode: "en-IN",
 			}
 			for _, opt := range tt.opts {
-				if err := opt(req); err != nil {
-					t.Skipf("option error (expected in some cases): %v", err)
-				}
+				opt(req)
 			}
 			err := validateTTSRequest(req)
 			if tt.wantErr == "" {
@@ -319,9 +298,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamModel(BulbulV2),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		if err := validateTTSStreamRequest(cfg); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -337,9 +314,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamModel(BulbulV3Beta),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		if err := validateTTSStreamRequest(cfg); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -356,9 +331,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamPitch(0.5),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		if err := validateTTSStreamRequest(cfg); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -375,9 +348,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamLoudness(1.0),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		if err := validateTTSStreamRequest(cfg); err != nil {
 			t.Errorf("validation failed: %v", err)
@@ -394,11 +365,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamPitch(0.5),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				if err.Error() != "pitch: pitch is only supported for Bulbul:v2" {
-					t.Fatalf("unexpected option error: %v", err)
-				}
-			}
+			opt(cfg)
 		}
 		err := validateTTSStreamRequest(cfg)
 		if err == nil {
@@ -419,11 +386,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamLoudness(1.0),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				if err.Error() != "loudness: loudness is only supported for Bulbul:v2" {
-					t.Fatalf("unexpected option error: %v", err)
-				}
-			}
+			opt(cfg)
 		}
 		err := validateTTSStreamRequest(cfg)
 		if err == nil {
@@ -444,11 +407,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamTemperature(0.5),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				if err.Error() != "temperature: temperature is not supported for Bulbul:v2" {
-					t.Fatalf("unexpected option error: %v", err)
-				}
-			}
+			opt(cfg)
 		}
 		err := validateTTSStreamRequest(cfg)
 		if err == nil {
@@ -469,9 +428,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamSampleRate(SampleRate48000),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		err := validateTTSStreamRequest(cfg)
 		if err == nil {
@@ -492,9 +449,7 @@ func TestStreamOptionValidation(t *testing.T) {
 			WithStreamSampleRate(SampleRate48000),
 		}
 		for _, opt := range opts {
-			if err := opt(cfg); err != nil {
-				t.Fatalf("option failed: %v", err)
-			}
+			opt(cfg)
 		}
 		err := validateTTSStreamRequest(cfg)
 		if err == nil {

@@ -96,9 +96,7 @@ func (c *STTClient) Transcribe(
 	}
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateTranscribeRequest(req); err != nil {
@@ -234,9 +232,7 @@ func (c *STTClient) TranscribeStream(
 	}
 
 	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
-			return nil, err
-		}
+		opt(cfg)
 	}
 
 	// Set default language before validation

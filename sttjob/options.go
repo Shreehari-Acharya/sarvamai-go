@@ -1,13 +1,12 @@
 package sttjob
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
 // InitJobOption is a functional option for configuring an Initialize request.
-type InitJobOption func(*initJobRequest) error
+type InitJobOption func(*initJobRequest)
 
 // WithLanguage sets the language code for the transcription job.
 //
@@ -26,19 +25,8 @@ type InitJobOption func(*initJobRequest) error
 //
 //	client.Initialize(ctx, WithLanguage(languages.ToLanguageCode("hi-IN")))
 func WithLanguage(language languages.Code) InitJobOption {
-	return func(req *initJobRequest) error {
-
-		if language == "" {
-			return nil
-		}
-		if !languages.SaarasLanguages[language] {
-			return &sarvamaierrors.ValidationError{
-				Field:   "language",
-				Message: "invalid language code.",
-			}
-		}
+	return func(req *initJobRequest) {
 		req.JobParameters.LanguageCode = &language
-		return nil
 	}
 }
 
@@ -53,16 +41,8 @@ func WithLanguage(language languages.Code) InitJobOption {
 //
 //	client.Initialize(ctx, WithModel(speech.ModelSaaras))
 func WithModel(model speech.Model) InitJobOption {
-
-	return func(req *initJobRequest) error {
-		if model != speech.ModelSaarika && model != speech.ModelSaaras {
-			return &sarvamaierrors.ValidationError{
-				Field:   "model",
-				Message: "invalid model. supported models are saarika:v2.5 and saaras:v3",
-			}
-		}
+	return func(req *initJobRequest) {
 		req.JobParameters.Model = &model
-		return nil
 	}
 }
 
@@ -82,9 +62,8 @@ func WithModel(model speech.Model) InitJobOption {
 //
 //	client.Initialize(ctx, WithMode(speech.ModeTranslate))
 func WithMode(mode speech.Mode) InitJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.Mode = &mode
-		return nil
 	}
 }
 
@@ -101,9 +80,8 @@ func WithMode(mode speech.Mode) InitJobOption {
 //
 //	client.Initialize(ctx, WithTimeStamps(true))
 func WithTimeStamps(enabled bool) InitJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.WithTimestamps = &enabled
-		return nil
 	}
 }
 
@@ -122,9 +100,8 @@ func WithTimeStamps(enabled bool) InitJobOption {
 //
 //	client.Initialize(ctx, WithDiarization(true))
 func WithDiarization(enabled bool) InitJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.WithDiarization = &enabled
-		return nil
 	}
 }
 
@@ -146,9 +123,8 @@ func WithDiarization(enabled bool) InitJobOption {
 //	    WithNumSpeakers(2),
 //	)
 func WithNumSpeakers(num int) InitJobOption {
-	return func(req *initJobRequest) error {
+	return func(req *initJobRequest) {
 		req.JobParameters.NumSpeakers = &num
-		return nil
 	}
 }
 
@@ -169,28 +145,21 @@ func WithNumSpeakers(num int) InitJobOption {
 //
 //	// Simple callback
 //	token := "my-secret-token"
-//	client.Initialize(ctx, WithCallback("https://my-server.com/webhook", &token))
+//	client.Initialize(ctx, WithCallback("https://your-webhook.com/callback", &token))
 //
 //	// Without auth token
-//	client.Initialize(ctx, WithCallback("https://my-server.com/webhook", nil))
+//	client.Initialize(ctx, WithCallback("https://your-webhook.com/callback", nil))
 func WithCallback(url string, authToken *string) InitJobOption {
-	return func(req *initJobRequest) error {
-		if url == "" {
-			return &sarvamaierrors.ValidationError{
-				Field:   "callback_url",
-				Message: "callback URL cannot be empty",
-			}
-		}
+	return func(req *initJobRequest) {
 		req.Callback = &speech.Callback{
 			URL:       url,
 			AuthToken: authToken,
 		}
-		return nil
 	}
 }
 
 // StartJobOption is a functional option for configuring a Start request.
-type StartJobOption func(*startJobRequest) error
+type StartJobOption func(*startJobRequest)
 
 // WithPtuID sets the Pre-Trained Unit (PTU) ID for the transcription job.
 //
@@ -205,8 +174,7 @@ type StartJobOption func(*startJobRequest) error
 //
 //	client.Start(ctx, jobID, WithPtuID(12345))
 func WithPtuID(ptuID int) StartJobOption {
-	return func(req *startJobRequest) error {
+	return func(req *startJobRequest) {
 		req.PtuID = &ptuID
-		return nil
 	}
 }

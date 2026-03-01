@@ -46,6 +46,22 @@ func validateTTSRequest(req *ttsRequest) error {
 		return err
 	}
 
+	if req.SpeakerVoice != nil {
+		var allowedVoices []SpeakerVoice
+		if model == BulbulV2 {
+			allowedVoices = allowedSpeakerVoicesForBulbulV2
+		} else {
+			allowedVoices = allowedSpeakerVoicesForBulbulV3
+		}
+
+		if !slices.Contains(allowedVoices, *req.SpeakerVoice) {
+			return &sarvamaierrors.ValidationError{
+				Field:   "speaker_voice",
+				Message: fmt.Sprintf("speaker voice %s is not supported for model %s", *req.SpeakerVoice, model),
+			}
+		}
+	}
+
 	switch model {
 	case BulbulV3:
 		if req.Pitch != nil {
@@ -152,6 +168,45 @@ func validateTTSStreamRequest(cfg *ttsStreamRequest) error {
 	model := BulbulV2
 	if cfg.Model != nil {
 		model = *cfg.Model
+	}
+
+	if model == BulbulV3 {
+		return &sarvamaierrors.ValidationError{
+			Field:   "model",
+			Message: "Bulbul:v3 is not supported for streaming. Use Bulbul:v2 or Bulbul:v3-beta.",
+		}
+	}
+
+	var allowedVoices []SpeakerVoice
+	if model == BulbulV2 {
+		allowedVoices = allowedSpeakerVoicesForBulbulV2
+	} else {
+		allowedVoices = allowedSpeakerVoicesForBulbulV3Beta
+	}
+
+	if !slices.Contains(allowedVoices, cfg.Speaker) {
+		return &sarvamaierrors.ValidationError{
+			Field:   "speaker_voice",
+			Message: fmt.Sprintf("speaker voice %s is not supported for model %s", cfg.Speaker, model),
+		}
+	}
+
+	if cfg.MinBufferSize != nil {
+		if *cfg.MinBufferSize < 30 || *cfg.MinBufferSize > 200 {
+			return &sarvamaierrors.ValidationError{
+				Field:   "min_buffer_size",
+				Message: "min_buffer_size must be between 30 and 200",
+			}
+		}
+	}
+
+	if cfg.MaxChunkLength != nil {
+		if *cfg.MaxChunkLength < 50 || *cfg.MaxChunkLength > 500 {
+			return &sarvamaierrors.ValidationError{
+				Field:   "max_chunk_length",
+				Message: "max_chunk_length must be between 50 and 500",
+			}
+		}
 	}
 
 	switch model {

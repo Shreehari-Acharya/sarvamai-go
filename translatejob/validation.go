@@ -4,6 +4,18 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 )
 
+func validateInitJobRequest(req *initJobRequest) error {
+	if req.Callback != nil {
+		if req.Callback.URL == "" {
+			return &sarvamaierrors.ValidationError{
+				Field:   "callback_url",
+				Message: "callback URL cannot be empty",
+			}
+		}
+	}
+	return nil
+}
+
 func validateGetUploadLinksRequest(req *getUploadLinksRequest) error {
 	if req.JobID == "" {
 		return &sarvamaierrors.ValidationError{

@@ -77,9 +77,7 @@ func (c *TextClient) Translate(
 	}
 
 	for _, opt := range options {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	// Validate the request before sending to catch any client-side errors early.
@@ -152,9 +150,7 @@ func (c *TextClient) Transliterate(ctx context.Context,
 	}
 
 	for _, opt := range options {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 	// Validate the request before sending to catch any client-side errors early.
 	if err := validateTransliterateRequest(*req); err != nil {

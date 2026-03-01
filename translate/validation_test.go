@@ -86,7 +86,8 @@ func TestWithModelForTranslateStream(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &streamTranslateRequest{}
 			opt := WithModelForTranslateStream(tt.model)
-			err := opt(req)
+			opt(req)
+			err := validateTranslateStreamRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -158,7 +159,8 @@ func TestWithModeForTranslateStream(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &streamTranslateRequest{}
 			opt := WithModeForTranslateStream(tt.mode)
-			err := opt(req)
+			opt(req)
+			err := validateTranslateStreamRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -255,7 +257,8 @@ func TestWithAudioCodecForTranslateStream(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &streamTranslateRequest{}
 			opt := WithAudioCodecForTranslateStream(tt.codec)
-			err := opt(req)
+			opt(req)
+			err := validateTranslateStreamRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -318,7 +321,8 @@ func TestWithSampleRateForTranslateStream(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			req := &streamTranslateRequest{}
 			opt := WithSampleRateForTranslateStream(tt.rate)
-			err := opt(req)
+			opt(req)
+			err := validateTranslateStreamRequest(req)
 
 			if tt.wantErr {
 				if err == nil {

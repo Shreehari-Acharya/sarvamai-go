@@ -471,9 +471,10 @@ func TestWithModel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := &transcribeRequest{}
+			req := &transcribeRequest{File: &testFileReader{}}
 			opt := WithModel(tt.model)
-			err := opt(req)
+			opt(req)
+			err := validateTranscribeRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -531,21 +532,22 @@ func TestWithLanguage(t *testing.T) {
 			name:    "invalid language fr-FR should error",
 			lang:    languages.Code("fr-FR"),
 			wantErr: true,
-			errMsg:  "invalid language code",
+			errMsg:  "is not supported by",
 		},
 		{
 			name:    "invalid language zh-CN should error",
 			lang:    languages.Code("zh-CN"),
 			wantErr: true,
-			errMsg:  "invalid language code",
+			errMsg:  "is not supported by",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := &transcribeRequest{}
+			req := &transcribeRequest{File: &testFileReader{}}
 			opt := WithLanguage(tt.lang)
-			err := opt(req)
+			opt(req)
+			err := validateTranscribeRequest(req)
 
 			if tt.wantErr {
 				if err == nil {
@@ -604,7 +606,8 @@ func TestWithStreamSampleRate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := &streamTranscribeRequest{}
 			opt := WithStreamSampleRate(tt.rate)
-			err := opt(cfg)
+			opt(cfg)
+			err := validateStreamConfig(cfg)
 
 			if tt.wantErr {
 				if err == nil {
@@ -677,7 +680,8 @@ func TestWithStreamInputAudioCodec(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := &streamTranscribeRequest{}
 			opt := WithStreamInputAudioCodec(tt.codec)
-			err := opt(cfg)
+			opt(cfg)
+			err := validateStreamConfig(cfg)
 
 			if tt.wantErr {
 				if err == nil {
@@ -724,9 +728,10 @@ func TestWithAudioCodec(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req := &transcribeRequest{}
+			req := &transcribeRequest{File: &testFileReader{}}
 			opt := WithAudioCodec(tt.codec)
-			err := opt(req)
+			opt(req)
+			err := validateTranscribeRequest(req)
 
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)

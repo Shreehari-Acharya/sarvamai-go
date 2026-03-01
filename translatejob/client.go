@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
@@ -90,9 +89,11 @@ func (c *TranslateJobClient) Initialize(ctx context.Context, opts ...initJobOpti
 	}
 
 	for _, option := range opts {
-		if err := option(req); err != nil {
-			return nil, err
-		}
+		option(req)
+	}
+
+	if err := validateInitJobRequest(req); err != nil {
+		return nil, err
 	}
 
 	var reqUrl string
@@ -175,9 +176,7 @@ func (c *TranslateJobClient) GetUploadLinks(ctx context.Context,
 	var resp GetUploadLinksResponse
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateGetUploadLinksRequest(req); err != nil {
@@ -253,9 +252,7 @@ func (c *TranslateJobClient) Start(ctx context.Context, jobID string, opts ...st
 	var resp JobStatusResponse
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateStartJobRequest(req); err != nil {
@@ -316,11 +313,8 @@ func (c *TranslateJobClient) Start(ctx context.Context, jobID string, opts ...st
 //
 // https://docs.sarvam.ai/api-reference-docs/speech-to-text-translate/stt-translate/job/status
 func (c *TranslateJobClient) GetStatus(ctx context.Context, jobID string) (*JobStatusResponse, error) {
-	if jobID == "" {
-		return nil, &sarvamaierrors.ValidationError{
-			Field:   "job_id",
-			Message: "job_id is required",
-		}
+	if err := validateStartJobRequest(&startJobRequest{JobID: jobID}); err != nil {
+		return nil, err
 	}
 
 	var resp JobStatusResponse
@@ -403,9 +397,7 @@ func (c *TranslateJobClient) GetDownloadLinks(ctx context.Context, jobID string,
 	}
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
 	if err := validateGetDownloadLinksRequest(req); err != nil {
