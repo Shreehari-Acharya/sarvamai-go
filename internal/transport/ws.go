@@ -42,7 +42,16 @@ func (t *Transport) DialWebSocket(
 		return nil, err
 	}
 
-	return &WSConnection{conn: conn}, nil
+	wsConn := &WSConnection{conn: conn}
+
+	// Handle context cancellation to ensure the connection is closed
+	// and blocking Read/Write operations are interrupted.
+	go func() {
+		<-ctx.Done()
+		_ = wsConn.Close()
+	}()
+
+	return wsConn, nil
 }
 
 func (w *WSConnection) ReadMessage() (int, []byte, error) {
@@ -57,3 +66,4 @@ func (w *WSConnection) WriteJSON(v any) error {
 func (w *WSConnection) Close() error {
 	return w.conn.Close()
 }
+
