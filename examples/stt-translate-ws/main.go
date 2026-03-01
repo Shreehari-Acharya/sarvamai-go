@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/translate"
 )
 
@@ -30,7 +29,7 @@ func main() {
 
 	stream, err := client.SpeechToTextTranslate.TranslateStream(
 		ctx,
-		translate.WithSampleRateForTranslateStream(speech.SampleRate16000),
+		translate.WithSampleRateForTranslateStream(translate.SampleRate16000),
 	)
 	if err != nil {
 		log.Fatal("stream error:", err)

@@ -66,4 +66,3 @@ func (w *WSConnection) WriteJSON(v any) error {
 func (w *WSConnection) Close() error {
 	return w.conn.Close()
 }
-

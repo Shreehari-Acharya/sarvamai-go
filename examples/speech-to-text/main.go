@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
@@ -37,8 +36,8 @@ func main() {
 	resp, err := client.SpeechToText.Transcribe(
 		ctx,
 		audioFile,
-		stt.WithModel(speech.ModelSaaras),
-		stt.WithMode(speech.ModeTranslate),
+		stt.WithModel(stt.ModelSaaras),
+		stt.WithMode(stt.ModeTranslate),
 	)
 	if err != nil {
 		log.Fatalf("Transcription failed: %v", err)

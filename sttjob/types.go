@@ -7,6 +7,68 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
+// Aliases for common types and constants to improve developer experience.
+
+type Model = speech.Model
+
+const (
+	ModelSaarika = speech.ModelSaarika
+	ModelSaaras  = speech.ModelSaaras
+)
+
+type Mode = speech.Mode
+
+const (
+	ModeTranscribe = speech.ModeTranscribe
+	ModeTranslate  = speech.ModeTranslate
+	ModeVerbatim   = speech.ModeVerbatim
+	ModeTranslit   = speech.ModeTranslit
+	ModeCodemix    = speech.ModeCodemix
+)
+
+type JobState = speech.JobState
+
+const (
+	JobStateAccepted  = speech.JobStateAccepted
+	JobStatePending   = speech.JobStatePending
+	JobStateRunning   = speech.JobStateRunning
+	JobStateCompleted = speech.JobStateCompleted
+	JobStateFailed    = speech.JobStateFailed
+)
+
+type ContainerType = speech.ContainerType
+
+const (
+	ContainerTypeAzure   = speech.ContainerTypeAzure
+	ContainerTypeLocal   = speech.ContainerTypeLocal
+	ContainerTypeGCS     = speech.ContainerTypeGCS
+	ContainerTypeAzureV1 = speech.ContainerTypeAzureV1
+)
+
+type FileState = speech.FileState
+
+const (
+	FileStateSuccess             = speech.FileStateSuccess
+	FileStateAPIError            = speech.FileStateAPIError
+	FileStateInternalServerError = speech.FileStateInternalServerError
+)
+
+type LanguageCode = languages.Code
+
+const (
+	LanguageBnIN = languages.CodeBnIN
+	LanguageEnIN = languages.CodeEnIN
+	LanguageGuIN = languages.CodeGuIN
+	LanguageHiIN = languages.CodeHiIN
+	LanguageKnIN = languages.CodeKnIN
+	LanguageMlIN = languages.CodeMlIN
+	LanguageMrIN = languages.CodeMrIN
+	LanguageOrIN = languages.CodeOrIN
+	LanguagePaIN = languages.CodePaIN
+	LanguageTaIN = languages.CodeTaIN
+	LanguageTeIN = languages.CodeTeIN
+)
+
 // JobParameters defines the configuration for a speech-to-text bulk job.
 //
 // This struct is used when initializing a new job to specify the language,

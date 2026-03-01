@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
 )
 
@@ -30,8 +29,8 @@ func main() {
 
 	stream, err := client.SpeechToText.TranscribeStream(
 		ctx,
-		"en-IN",
-		stt.WithStreamSampleRate(speech.SampleRate16000),
+		stt.LanguageEnIN,
+		stt.WithStreamSampleRate(stt.SampleRate16000),
 	)
 	if err != nil {
 		log.Fatal("stream error:", err)

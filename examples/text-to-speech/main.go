@@ -31,7 +31,7 @@ func main() {
 	resp, err := client.TextToSpeech.Convert(
 		ctx,
 		"Hello, yeh ek sarvam ai text to speech conversion ka example hai.",
-		"hi-IN",
+		tts.LanguageHiIN,
 		tts.WithSpeakerVoice(tts.SpeakerShubh),
 		tts.WithOutputAudioCodec(tts.AudioCodecMP3),
 		tts.WithModel(tts.BulbulV3),

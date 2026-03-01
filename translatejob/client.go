@@ -220,7 +220,7 @@ type startJobRequest struct {
 //
 //	ctx: Context for the request
 //	jobID: The job ID from [Initialize]
-//	opts: Optional functional options
+//	opts: Optional functional options to configure the job
 //
 // # Returns
 //
@@ -303,7 +303,7 @@ func (c *TranslateJobClient) Start(ctx context.Context, jobID string, opts ...st
 //	        log.Fatal(err)
 //	    }
 //	    fmt.Printf("Job state: %s\n", status.JobState)
-//	    if status.JobState == "Completed" || status.JobState == "Failed" {
+//	    if status.JobState == translatejob.JobStateCompleted || status.JobState == translatejob.JobStateFailed {
 //	        break
 //	    }
 //	    time.Sleep(5 * time.Second) // Respect rate limiting
@@ -369,7 +369,7 @@ type getDownloadLinksRequest struct {
 //	if err != nil {
 //	    log.Fatal(err)
 //	}
-//	if status.JobState != speech.JobStateCompleted {
+//	if status.JobState != translatejob.JobStateCompleted {
 //	    fmt.Println("Job not completed yet")
 //	    return
 //	}

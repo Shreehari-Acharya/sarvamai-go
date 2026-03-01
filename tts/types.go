@@ -6,6 +6,24 @@ import (
 	"sync"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+)
+
+// LanguageCode is an alias for languages.Code to improve developer experience.
+type LanguageCode = languages.Code
+
+const (
+	LanguageBnIN = languages.CodeBnIN
+	LanguageEnIN = languages.CodeEnIN
+	LanguageGuIN = languages.CodeGuIN
+	LanguageHiIN = languages.CodeHiIN
+	LanguageKnIN = languages.CodeKnIN
+	LanguageMlIN = languages.CodeMlIN
+	LanguageMrIN = languages.CodeMrIN
+	LanguageOrIN = languages.CodeOrIN
+	LanguagePaIN = languages.CodePaIN
+	LanguageTaIN = languages.CodeTaIN
+	LanguageTeIN = languages.CodeTeIN
 )
 
 // SpeakerVoice specifies the voice to use for text-to-speech synthesis.

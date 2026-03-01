@@ -41,6 +41,34 @@ package languages
 //   - Not all APIs support all languages - check each API's documentation
 type Code string
 
+const (
+	CodeUnknown Code = "unknown"
+	CodeAuto    Code = "auto"
+	CodeBnIN    Code = "bn-IN"
+	CodeEnIN    Code = "en-IN"
+	CodeGuIN    Code = "gu-IN"
+	CodeHiIN    Code = "hi-IN"
+	CodeKnIN    Code = "kn-IN"
+	CodeMlIN    Code = "ml-IN"
+	CodeMrIN    Code = "mr-IN"
+	CodeOrIN    Code = "or-IN"
+	CodePaIN    Code = "pa-IN"
+	CodeTaIN    Code = "ta-IN"
+	CodeTeIN    Code = "te-IN"
+	CodeAsIN    Code = "as-IN"
+	CodeBrxIN   Code = "brx-IN"
+	CodeDoiIN   Code = "doi-IN"
+	CodeKokIN   Code = "kok-IN"
+	CodeKsIN    Code = "ks-IN"
+	CodeMaiIN   Code = "mai-IN"
+	CodeMniIN   Code = "mni-IN"
+	CodeNeIN    Code = "ne-IN"
+	CodeSaIN    Code = "sa-IN"
+	CodeSatIN   Code = "sat-IN"
+	CodeSdIN    Code = "sd-IN"
+	CodeUrIN    Code = "ur-IN"
+)
+
 // String returns the string representation of the language code.
 func (c Code) String() string {
 	return string(c)
@@ -55,29 +83,29 @@ func (c Code) IsValid() bool {
 // Languages is a map of all supported language codes.
 // The value indicates whether the language code is valid.
 var Languages = map[Code]bool{
-	"unknown": true, // unknown
-	"auto":    true, // auto
-	"bn-IN":   true, // Bengali
-	"en-IN":   true, // English
-	"gu-IN":   true, // Gujarati
-	"hi-IN":   true, // Hindi
-	"kn-IN":   true, // Kannada
-	"ml-IN":   true, // Malayalam
-	"mr-IN":   true, // Marathi
-	"or-IN":   true, // Odia
-	"pa-IN":   true, // Punjabi
-	"ta-IN":   true, // Tamil
-	"te-IN":   true, // Telugu
-	"as-IN":   true, // Assamese
-	"brx-IN":  true, // Bodo
-	"doi-IN":  true, // Dogri
-	"kok-IN":  true, // Konkani
-	"ks-IN":   true, // Kashmiri
-	"mai-IN":  true, // Maithili
-	"mni-IN":  true, // Manipuri
-	"ne-IN":   true, // Nepali
-	"sa-IN":   true, // Sanskrit
-	"sat-IN":  true, // Santali
-	"sd-IN":   true, // Sindhi
-	"ur-IN":   true, // Urdu
+	CodeUnknown: true,
+	CodeAuto:    true,
+	CodeBnIN:    true,
+	CodeEnIN:    true,
+	CodeGuIN:    true,
+	CodeHiIN:    true,
+	CodeKnIN:    true,
+	CodeMlIN:    true,
+	CodeMrIN:    true,
+	CodeOrIN:    true,
+	CodePaIN:    true,
+	CodeTaIN:    true,
+	CodeTeIN:    true,
+	CodeAsIN:    true,
+	CodeBrxIN:   true,
+	CodeDoiIN:   true,
+	CodeKokIN:   true,
+	CodeKsIN:    true,
+	CodeMaiIN:   true,
+	CodeMniIN:   true,
+	CodeNeIN:    true,
+	CodeSaIN:    true,
+	CodeSatIN:   true,
+	CodeSdIN:    true,
+	CodeUrIN:    true,
 }

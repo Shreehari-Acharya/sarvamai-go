@@ -66,9 +66,9 @@ type initJobRequest struct {
 //
 // # Functional Options
 //
-//	WithLanguage(languages.Code)     - Language code for transcription (default: auto-detect)
-//	WithModel(speech.Model)          - Model to use (saarika:v2.5 or saaras:v3)
-//	WithMode(speech.Mode)            - Processing mode (transcribe, translate, verbatim, translit, codemix)
+//	WithLanguage(LanguageCode)     - Language code for transcription (default: auto-detect)
+//	WithModel(Model)               - Model to use (saarika:v2.5 or saaras:v3)
+//	WithMode(Mode)                 - Processing mode (transcribe, translate, verbatim, translit, codemix)
 //	WithTimeStamps(bool)             - Include word-level timestamps in response
 //	WithDiarization(bool)            - Enable speaker diarization (beta)
 //	WithNumSpeakers(int)             - Expected number of speakers (requires diarization)
@@ -78,9 +78,9 @@ type initJobRequest struct {
 //
 //	resp, err := client.SpeechToTextJob.Initialize(
 //	    context.Background(),
-//	    sttjob.WithLanguage(languages.ToLanguageCode("hi-IN")),
-//	    sttjob.WithModel(speech.ModelSaaras),
-//	    sttjob.WithMode(speech.ModeTranscribe),
+//	    sttjob.WithLanguage(sttjob.LanguageHiIN),
+//	    sttjob.WithModel(sttjob.ModelSaaras),
+//	    sttjob.WithMode(sttjob.ModeTranscribe),
 //	    sttjob.WithTimeStamps(true),
 //	    sttjob.WithDiarization(true),
 //	    sttjob.WithNumSpeakers(2),
@@ -305,7 +305,7 @@ func (c *SttJobClient) Start(ctx context.Context,
 // # Rate Limiting
 //
 // To prevent rate limit errors, implement a minimum delay of 5 milliseconds
-// between consecutive status polling requests.
+// between consecutive status requests.
 //
 // # Example
 //
@@ -319,7 +319,7 @@ func (c *SttJobClient) Start(ctx context.Context,
 //	    fmt.Printf("Job State: %s\n", resp.JobState)
 //	    fmt.Printf("Progress: %d/%d files\n", *resp.SuccessfulFilesCount, *resp.TotalFiles)
 //
-//	    if resp.JobState == speech.JobStateCompleted || resp.JobState == speech.JobStateFailed {
+//	    if resp.JobState == sttjob.JobStateCompleted || resp.JobState == sttjob.JobStateFailed {
 //	        break
 //	    }
 //
@@ -404,7 +404,7 @@ type getDownloadLinksRequest struct {
 //	}
 //
 //	// Download each transcription
-//	for fileID, downloadInfo := range resp.DownloadUrls {
+//	for fileID, downloadInfo := range resp.UploadUrls {
 //	    fmt.Printf("Downloading %s from %s\n", fileID, downloadInfo.FileUrl)
 //	    // Make GET request to download the file
 //	}

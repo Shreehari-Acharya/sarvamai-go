@@ -37,7 +37,7 @@ type docIntelInitializeRequest struct {
 //
 // # Functional Options
 //
-//	WithLanguage(languages.Code)      - Language of the document (BCP-47 format)
+//	WithLanguage(LanguageCode)      - Language of the document (BCP-47 format)
 //	WithOutputFormat(OutputFormat)   - Output format (html, md, json)
 //	WithCallback(url string, authToken *string)    - Webhook URL and optional auth token
 //
@@ -45,7 +45,7 @@ type docIntelInitializeRequest struct {
 //
 //	resp, err := client.DocumentIntelligence.Initialize(
 //	    ctx,
-//	    docintel.WithLanguage("hi-IN"),
+//	    docintel.WithLanguage(docintel.LanguageHiIN),
 //	    docintel.WithOutputFormat(docintel.OutputFormatMD),
 //	)
 //	if err != nil {

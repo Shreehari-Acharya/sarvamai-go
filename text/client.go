@@ -55,7 +55,7 @@ type translateRequest struct {
 //
 // # Example
 //
-//	resp, err := client.Text.Translate(ctx, "Hello", "en-IN", "hi-IN")
+//	resp, err := client.Text.Translate(ctx, "Hello", text.LanguageEnIN, text.LanguageHiIN)
 //	// resp.TranslatedText = "नमस्ते"
 //
 // # API Reference
@@ -64,8 +64,8 @@ type translateRequest struct {
 func (c *TextClient) Translate(
 	ctx context.Context,
 	input string,
-	sourceLang languages.Code,
-	targetLang languages.Code,
+	sourceLang LanguageCode,
+	targetLang LanguageCode,
 	options ...translateOption,
 ) (*TranslateResponse, error) {
 	var resp TranslateResponse
@@ -129,16 +129,16 @@ type transliterateRequest struct {
 //
 // # Example
 //
-//	resp, err := client.Text.Transliterate(ctx, "Hello", "en-IN", "hi-IN")
-//	// resp.TransliteratedText = "हैलो"
+//	resp, err := client.Text.Transliterate(ctx, "Hello", text.LanguageEnIN, text.LanguageHiIN)
+//	// resp.TranslatedText = "हैलो"
 //
 // # API Reference
 //
 // https://docs.sarvam.ai/api-reference-docs/text/transliterate-text
 func (c *TextClient) Transliterate(ctx context.Context,
 	input string,
-	sourceLang languages.Code,
-	targetLang languages.Code,
+	sourceLang LanguageCode,
+	targetLang LanguageCode,
 	options ...transliterationOption,
 ) (*TransliterateResponse, error) {
 	var resp TransliterateResponse

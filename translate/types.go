@@ -13,6 +13,57 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
+// Aliases for common types and constants to improve developer experience.
+
+type Model = speech.Model
+
+const (
+	ModelSaaras    = speech.ModelSaaras
+	ModelSaarasV25 = speech.ModelSaarasV25
+)
+
+type Mode = speech.Mode
+
+const (
+	ModeTranscribe = speech.ModeTranscribe
+	ModeTranslate  = speech.ModeTranslate
+	ModeVerbatim   = speech.ModeVerbatim
+	ModeTranslit   = speech.ModeTranslit
+	ModeCodemix    = speech.ModeCodemix
+)
+
+type InputAudioCodec = speech.InputAudioCodec
+
+const (
+	CodecWAV      = speech.CodecWAV
+	CodecMP3      = speech.CodecMP3
+	CodecFLAC     = speech.CodecFLAC
+	CodecPCMS16LE = speech.CodecPCMS16LE
+)
+
+type StreamSampleRate = speech.StreamSampleRate
+
+const (
+	SampleRate8000  = speech.SampleRate8000
+	SampleRate16000 = speech.SampleRate16000
+)
+
+type LanguageCode = languages.Code
+
+const (
+	LanguageBnIN = languages.CodeBnIN
+	LanguageEnIN = languages.CodeEnIN
+	LanguageGuIN = languages.CodeGuIN
+	LanguageHiIN = languages.CodeHiIN
+	LanguageKnIN = languages.CodeKnIN
+	LanguageMlIN = languages.CodeMlIN
+	LanguageMrIN = languages.CodeMrIN
+	LanguageOrIN = languages.CodeOrIN
+	LanguagePaIN = languages.CodePaIN
+	LanguageTaIN = languages.CodeTaIN
+	LanguageTeIN = languages.CodeTeIN
+)
+
 // TranslateResponse represents the response from a speech-to-text translation request.
 type TranslateResponse struct {
 	// RequestID is the unique identifier for the request.

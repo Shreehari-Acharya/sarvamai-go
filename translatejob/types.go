@@ -15,6 +15,34 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
 )
 
+// Aliases for common types and constants to improve developer experience.
+
+type Model = speech.Model
+
+const (
+	ModelSaarasV25 = speech.ModelSaarasV25
+	ModelSaaras    = speech.ModelSaaras
+)
+
+type JobState = speech.JobState
+
+const (
+	JobStateAccepted  = speech.JobStateAccepted
+	JobStatePending   = speech.JobStatePending
+	JobStateRunning   = speech.JobStateRunning
+	JobStateCompleted = speech.JobStateCompleted
+	JobStateFailed    = speech.JobStateFailed
+)
+
+type ContainerType = speech.ContainerType
+
+const (
+	ContainerTypeAzure   = speech.ContainerTypeAzure
+	ContainerTypeLocal   = speech.ContainerTypeLocal
+	ContainerTypeGCS     = speech.ContainerTypeGCS
+	ContainerTypeAzureV1 = speech.ContainerTypeAzureV1
+)
+
 // JobParameters defines the configuration for a translation job.
 //
 // Use functional options from [options] to set these values.

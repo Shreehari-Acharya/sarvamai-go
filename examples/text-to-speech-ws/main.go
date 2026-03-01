@@ -29,7 +29,7 @@ func main() {
 	// Streaming TTS using iterator pattern
 	stream, err := client.TextToSpeech.StreamConvert(
 		ctx,
-		"hi-IN",
+		tts.LanguageHiIN,
 		tts.WithStreamSpeaker(tts.SpeakerShubh),
 		tts.WithStreamModel(tts.BulbulV3Beta),
 		tts.WithStreamTemperature(0.7),

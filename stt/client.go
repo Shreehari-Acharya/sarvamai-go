@@ -59,7 +59,7 @@ type transcribeRequest struct {
 //
 //	WithModel(Model)           - Speech recognition model (saarika:v2.5, saaras:v3)
 //	WithMode(Mode)             - Processing mode (transcribe, translate, verbatim, translit, codemix)
-//	WithLanguage(languages.Code) - Language code for the audio
+//	WithLanguage(LanguageCode) - Language code for the audio
 //	WithAudioCodec(InputAudioCodec) - Audio codec of the input file
 //
 // # Example
@@ -160,7 +160,7 @@ type streamTranscribeRequest struct {
 //
 // # Functional Options
 //
-//	WithStreamLanguage(languages.Code)    - Language code for recognition (defaults to "unknown")
+//	WithStreamLanguage(LanguageCode)    - Language code for recognition (defaults to "unknown")
 //	WithStreamModel(Model)                - Speech recognition model
 //	WithStreamMode(Mode)                  - Processing mode
 //	WithStreamSampleRate(StreamSampleRate) - Audio sample rate (defaults to 16000)
@@ -182,7 +182,7 @@ type streamTranscribeRequest struct {
 //
 //	stream, err := client.SpeechToText.TranscribeStream(
 //	    context.Background(),
-//	    stt.WithStreamLanguage(languages.CodeEnIN),
+//	    stt.LanguageEnIN,
 //	    stt.WithStreamModel(stt.ModelSaarika),
 //	    stt.WithStreamSampleRate(stt.SampleRate16000),
 //	)
@@ -205,7 +205,7 @@ type streamTranscribeRequest struct {
 //	for stream.Next() {
 //	    resp := stream.Current()
 //	    if resp.Type == stt.TypeData {
-//	        var data stt.TranscriptionData
+//	        var data stt.StreamData
 //	        resp.UnmarshalData(&data)
 //	        fmt.Println(data.Transcript)
 //	    }
@@ -223,7 +223,7 @@ type streamTranscribeRequest struct {
 // https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe/ws
 func (c *STTClient) TranscribeStream(
 	ctx context.Context,
-	language languages.Code,
+	language LanguageCode,
 	opts ...StreamOption,
 ) (*speech.Stream, error) {
 
@@ -237,7 +237,7 @@ func (c *STTClient) TranscribeStream(
 
 	// Set default language before validation
 	if cfg.Language == "" {
-		cfg.Language = languages.Code("unknown")
+		cfg.Language = languages.CodeUnknown
 	}
 
 	if err := validateStreamConfig(cfg); err != nil {

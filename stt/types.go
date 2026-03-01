@@ -1,7 +1,62 @@
 package stt
 
 import (
+	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+)
+
+// Aliases for common types and constants to improve developer experience.
+// Users can use stt.ModelSaarika instead of speech.ModelSaarika.
+
+type Model = speech.Model
+
+const (
+	ModelSaarika = speech.ModelSaarika
+	ModelSaaras  = speech.ModelSaaras
+)
+
+type Mode = speech.Mode
+
+const (
+	ModeTranscribe = speech.ModeTranscribe
+	ModeTranslate  = speech.ModeTranslate
+	ModeVerbatim   = speech.ModeVerbatim
+	ModeTranslit   = speech.ModeTranslit
+	ModeCodemix    = speech.ModeCodemix
+)
+
+type InputAudioCodec = speech.InputAudioCodec
+
+const (
+	CodecWAV      = speech.CodecWAV
+	CodecMP3      = speech.CodecMP3
+	CodecFLAC     = speech.CodecFLAC
+	CodecPCMS16LE = speech.CodecPCMS16LE
+)
+
+type StreamSampleRate = speech.StreamSampleRate
+
+const (
+	SampleRate8000  = speech.SampleRate8000
+	SampleRate16000 = speech.SampleRate16000
+)
+
+type LanguageCode = languages.Code
+
+const (
+	LanguageUnknown = languages.CodeUnknown
+	LanguageAuto    = languages.CodeAuto
+	LanguageEnIN    = languages.CodeEnIN
+	LanguageHiIN    = languages.CodeHiIN
+	LanguageBnIN    = languages.CodeBnIN
+	LanguageKnIN    = languages.CodeKnIN
+	LanguageMlIN    = languages.CodeMlIN
+	LanguageMrIN    = languages.CodeMrIN
+	LanguageOrIN    = languages.CodeOrIN
+	LanguagePaIN    = languages.CodePaIN
+	LanguageTaIN    = languages.CodeTaIN
+	LanguageTeIN    = languages.CodeTeIN
+	LanguageGuIN    = languages.CodeGuIN
 )
 
 // TranscribeResponse represents the response from a speech-to-text transcription.

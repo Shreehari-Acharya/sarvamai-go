@@ -159,9 +159,9 @@ type streamTranslateRequest struct {
 //
 //	stream, err := client.SpeechToTextTranslate.TranslateStream(
 //	    context.Background(),
-//	    translate.WithModelForTranslateStream(speech.ModelSaaras),
-//	    translate.WithModeForTranslateStream(speech.ModeTranslate),
-//	    translate.WithSampleRateForTranslateStream(speech.SampleRate16000),
+//	    translate.WithModelForTranslateStream(translate.ModelSaaras),
+//	    translate.WithModeForTranslateStream(translate.ModeTranslate),
+//	    translate.WithSampleRateForTranslateStream(translate.SampleRate16000),
 //	)
 //	if err != nil {
 //	    log.Fatal(err)

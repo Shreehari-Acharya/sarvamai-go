@@ -29,7 +29,7 @@ func main() {
 	{
 		// Example 1: Basic transliteration (English to Hindi)
 		// Converts "Hello" from Latin script to Devanagari script.
-		resp, err := client.Text.Transliterate(ctx, "Hello", "en-IN", "hi-IN")
+		resp, err := client.Text.Transliterate(ctx, "Hello", text.LanguageEnIN, text.LanguageHiIN)
 		if err != nil {
 			log.Fatalf("Transliterate failed: %v", err)
 		}
@@ -42,7 +42,7 @@ func main() {
 	{
 		// Example 2: Transliterate Hindi to English
 		// Converts from Devanagari script to Latin script.
-		resp, err := client.Text.Transliterate(ctx, "नमस्ते", "hi-IN", "en-IN")
+		resp, err := client.Text.Transliterate(ctx, "नमस्ते", text.LanguageHiIN, text.LanguageEnIN)
 		if err != nil {
 			log.Fatalf("Transliterate failed: %v", err)
 		}
@@ -53,7 +53,7 @@ func main() {
 	{
 		// Example 3: Auto-detect source language
 		// Automatically detects the source language.
-		resp, err := client.Text.Transliterate(ctx, "नमस्ते", "auto", "en-IN")
+		resp, err := client.Text.Transliterate(ctx, "नमस्ते", text.LanguageAuto, text.LanguageEnIN)
 
 		if err != nil {
 			log.Fatalf("Transliterate failed: %v", err)
@@ -67,7 +67,7 @@ func main() {
 		// Example 4: Transliterate with spoken form
 		// Converts text to natural spoken form.
 		// Note: Has no effect when target language is en-IN.
-		resp, err := client.Text.Transliterate(ctx, "मुझे कल 9:30am को appointment है", "hi-IN", "hi-IN",
+		resp, err := client.Text.Transliterate(ctx, "मुझे कल 9:30am को appointment है", text.LanguageHiIN, text.LanguageHiIN,
 			text.WithSpokenForm(true),
 		)
 		if err != nil {
@@ -81,7 +81,7 @@ func main() {
 	{
 		// Example 5: Transliterate with native numerals
 		// Uses language-specific native numerals instead of international (0-9).
-		resp, err := client.Text.Transliterate(ctx, "मेरे पास ₹200 है", "hi-IN", "hi-IN",
+		resp, err := client.Text.Transliterate(ctx, "मेरे पास ₹200 है", text.LanguageHiIN, text.LanguageHiIN,
 			text.WithNumeralsFormatTransliteration(text.NumeralsNative),
 		)
 		if err != nil {
@@ -94,7 +94,7 @@ func main() {
 	{
 		// Example 6: Transliterate with spoken form numerals in English
 		// Converts numbers to their English spoken form.
-		resp, err := client.Text.Transliterate(ctx, "मेरे पास ₹200 है", "hi-IN", "hi-IN",
+		resp, err := client.Text.Transliterate(ctx, "मेरे पास ₹200 है", text.LanguageHiIN, text.LanguageHiIN,
 			text.WithSpokenForm(true),
 			text.WithSpokenFormNumeralsLanguage(text.SpokenFormNumeralsEnglish),
 		)
@@ -110,7 +110,7 @@ func main() {
 		// Example 7: Transliterate Tamil to English
 		// Converts from Tamil script to Latin script.
 
-		resp, err := client.Text.Transliterate(ctx, "வணக்கம்", "ta-IN", "en-IN")
+		resp, err := client.Text.Transliterate(ctx, "வணக்கம்", text.LanguageTaIN, text.LanguageEnIN)
 		if err != nil {
 			log.Fatalf("Transliterate failed: %v", err)
 		}

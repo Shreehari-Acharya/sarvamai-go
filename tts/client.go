@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
 // Client provides text-to-speech synthesis services.
@@ -55,7 +54,7 @@ type ttsRequest struct {
 //	resp, err := client.TextToSpeech.Convert(
 //	    ctx,
 //	    "Hello, yeh ek sarvam ai text to speech conversion ka example hai.",
-//	    "hi-IN",
+//	    tts.LanguageHiIN,
 //	    tts.WithSpeakerVoice(tts.SpeakerShubh),
 //	    tts.WithOutputAudioCodec(tts.AudioCodecMP3),
 //	)
@@ -78,7 +77,7 @@ type ttsRequest struct {
 func (c *TTSClient) Convert(
 	ctx context.Context,
 	text string,
-	targetLanguage languages.Code,
+	targetLanguage LanguageCode,
 	opts ...option,
 ) (*ConvertResponse, error) {
 
@@ -147,7 +146,7 @@ type ttsStreamRequest struct {
 //
 //	stream, err := client.TextToSpeech.StreamConvert(
 //	    ctx,
-//	    "hi-IN",
+//	    tts.LanguageHiIN,
 //	    tts.WithStreamSpeaker(tts.SpeakerPriya),
 //	    tts.WithStreamModel(tts.BulbulV2),
 //	)
@@ -179,7 +178,7 @@ type ttsStreamRequest struct {
 // https://docs.sarvam.ai/api-reference-docs/text-to-speech/stream
 func (c *TTSClient) StreamConvert(
 	ctx context.Context,
-	targetLanguage languages.Code,
+	targetLanguage LanguageCode,
 	opts ...streamOption,
 ) (*AudioStream, error) {
 

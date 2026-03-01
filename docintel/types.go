@@ -7,6 +7,24 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
 )
 
+// Aliases for common types and constants to improve developer experience.
+
+type LanguageCode = languages.Code
+
+const (
+	LanguageBnIN = languages.CodeBnIN
+	LanguageEnIN = languages.CodeEnIN
+	LanguageGuIN = languages.CodeGuIN
+	LanguageHiIN = languages.CodeHiIN
+	LanguageKnIN = languages.CodeKnIN
+	LanguageMlIN = languages.CodeMlIN
+	LanguageMrIN = languages.CodeMrIN
+	LanguageOrIN = languages.CodeOrIN
+	LanguagePaIN = languages.CodePaIN
+	LanguageTaIN = languages.CodeTaIN
+	LanguageTeIN = languages.CodeTeIN
+)
+
 // OutputFormat specifies the format for the extracted document content.
 //
 // Output is delivered as a ZIP file containing the processed documents.
