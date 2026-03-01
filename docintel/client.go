@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
 )
 
 // DocIntelClient provides access to the Document Intelligence API.

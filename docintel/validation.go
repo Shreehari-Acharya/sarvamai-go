@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
 )
 
 func validateCallbackURL(callbackURL string) error {

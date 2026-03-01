@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 // SttJobClient provides access to the Speech-to-Text Bulk Job API.

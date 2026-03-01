@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 // TranslateClient provides access to the Speech-to-Text Translate API (REST and Streaming).

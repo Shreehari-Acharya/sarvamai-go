@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
 )
 
 func validateModel(model string) error {

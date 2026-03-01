@@ -1,7 +1,7 @@
 package docintel
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
 )
 
 // docIntelOption is a functional option for configuring a Document Intelligence job.

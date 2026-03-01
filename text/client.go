@@ -3,8 +3,8 @@ package text
 import (
 	"context"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
 )
 
 type TextClient struct {

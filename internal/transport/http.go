@@ -12,7 +12,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
 )
 
 const (

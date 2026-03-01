@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 func TestValidateTranslateRequest(t *testing.T) {

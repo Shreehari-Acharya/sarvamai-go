@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
 )
 
 func TestValidateChatRequest(t *testing.T) {

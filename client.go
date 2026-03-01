@@ -3,15 +3,15 @@ package sarvamai
 import (
 	"errors"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/chat"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/docintel"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
-	sttjob "github.com/Shreehari-Acharya/sarvam-go-sdk/sttjob"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/translate"
-	translatejob "github.com/Shreehari-Acharya/sarvam-go-sdk/translatejob"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/tts"
+	"github.com/Shreehari-Acharya/sarvamai-go/chat"
+	"github.com/Shreehari-Acharya/sarvamai-go/docintel"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/stt"
+	sttjob "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+	"github.com/Shreehari-Acharya/sarvamai-go/text"
+	"github.com/Shreehari-Acharya/sarvamai-go/translate"
+	translatejob "github.com/Shreehari-Acharya/sarvamai-go/translatejob"
+	"github.com/Shreehari-Acharya/sarvamai-go/tts"
 )
 
 // Client provides access to Sarvam AI services.

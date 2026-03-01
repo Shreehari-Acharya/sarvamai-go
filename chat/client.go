@@ -3,7 +3,7 @@ package chat
 import (
 	"context"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
 )
 
 // ChatClient provides access to the Chat Completions API.

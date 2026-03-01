@@ -1,7 +1,7 @@
 package translatejob
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 // initJobOption is a functional option for configuring an Initialize request.

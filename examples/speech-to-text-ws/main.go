@@ -8,8 +8,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
+	"github.com/Shreehari-Acharya/sarvamai-go"
+	"github.com/Shreehari-Acharya/sarvamai-go/stt"
 )
 
 func main() {

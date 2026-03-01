@@ -3,8 +3,8 @@ package speech
 import (
 	"fmt"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
 )
 
 // GetModelSpec is a helper function to get the model spec for a given model, with an option to return a default spec if the model is nil.

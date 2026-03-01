@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/transport"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 // STTClient provides speech-to-text transcription services.

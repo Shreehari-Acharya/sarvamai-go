@@ -1,6 +1,6 @@
 package speech
 
-import "github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+import "github.com/Shreehari-Acharya/sarvamai-go/languages"
 
 // Model Registry
 

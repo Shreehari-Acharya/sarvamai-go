@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/chat"
+	"github.com/Shreehari-Acharya/sarvamai-go"
+	"github.com/Shreehari-Acharya/sarvamai-go/chat"
 )
 
 func main() {

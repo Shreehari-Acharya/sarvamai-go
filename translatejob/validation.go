@@ -1,7 +1,7 @@
 package translatejob
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
 )
 
 func validateInitJobRequest(req *initJobRequest) error {

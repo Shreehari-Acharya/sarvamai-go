@@ -1,7 +1,7 @@
 package translate
 
 import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 type TranslateOption func(*translateRequest)

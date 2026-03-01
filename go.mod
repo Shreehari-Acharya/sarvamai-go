@@ -1,4 +1,4 @@
-module github.com/Shreehari-Acharya/sarvam-go-sdk
+module github.com/Shreehari-Acharya/sarvamai-go
 
 go 1.25.5
 

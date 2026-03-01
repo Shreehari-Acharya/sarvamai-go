@@ -4,7 +4,7 @@ package docintel
 import (
 	"time"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
 )
 
 // Aliases for common types and constants to improve developer experience.

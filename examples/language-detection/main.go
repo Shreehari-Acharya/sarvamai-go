@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk"
+	"github.com/Shreehari-Acharya/sarvamai-go"
 )
 
 func main() {

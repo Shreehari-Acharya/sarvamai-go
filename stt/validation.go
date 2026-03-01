@@ -3,8 +3,8 @@ package stt
 import (
 	"slices"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/internal/sarvamaierrors"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 func validateTranscribeRequest(req *transcribeRequest) error {

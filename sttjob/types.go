@@ -3,8 +3,8 @@ package sttjob
 import (
 	"time"
 
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/languages"
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/shared/speech"
+	"github.com/Shreehari-Acharya/sarvamai-go/languages"
+	"github.com/Shreehari-Acharya/sarvamai-go/shared/speech"
 )
 
 // Aliases for common types and constants to improve developer experience.
