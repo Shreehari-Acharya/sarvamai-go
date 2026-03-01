@@ -87,7 +87,7 @@ type translateRequest struct {
 // https://docs.sarvam.ai/api-reference-docs/speech-to-text-translate/translate
 func (c *TranslateClient) Translate(
 	ctx context.Context,
-	file interface{ Read([]byte) (int, error) },
+	file io.Reader,
 	opts ...TranslateOption,
 ) (*TranslateResponse, error) {
 

@@ -85,7 +85,7 @@ type transcribeRequest struct {
 // https://docs.sarvam.ai/api-reference-docs/speech-to-text/transcribe
 func (c *STTClient) Transcribe(
 	ctx context.Context,
-	file interface{ Read([]byte) (int, error) },
+	file io.Reader,
 	opts ...Option,
 ) (*TranscribeResponse, error) {
 

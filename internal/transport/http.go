@@ -170,11 +170,16 @@ func (t *Transport) DoMultipartRequest(
 					continue
 				}
 
-				if fieldValue.IsNil() {
-					continue
+				// Handle pointer and interface types safely
+				val := fieldValue
+				if val.Kind() == reflect.Ptr || val.Kind() == reflect.Interface {
+					if val.IsNil() {
+						continue
+					}
+					val = val.Elem()
 				}
 
-				value := fmt.Sprintf("%v", fieldValue.Elem().Interface())
+				value := fmt.Sprintf("%v", val.Interface())
 
 				if err := writer.WriteField(tag, value); err != nil {
 					pw.CloseWithError(err)
