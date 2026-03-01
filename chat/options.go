@@ -1,15 +1,11 @@
 package chat
 
-import (
-	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/sarvamaierrors"
-)
-
 //
 // Option Type and Functions
 //
 
 // option is a functional option that modifies a chatRequest.
-type option func(*chatRequest) error
+type option func(*chatRequest)
 
 // WithTemperature sets the sampling temperature for the chat request.
 //
@@ -21,15 +17,8 @@ type option func(*chatRequest) error
 //
 // Note: It is generally recommended to set either temperature or top_p, but not both.
 func WithTemperature(temp float64) option {
-	return func(r *chatRequest) error {
-		if temp < 0.0 || temp > 2.0 {
-			return &sarvamaierrors.ValidationError{
-				Message: "temperature must be between 0.0 and 2.0",
-				Field:   "temperature",
-			}
-		}
+	return func(r *chatRequest) {
 		r.Temperature = &temp
-		return nil
 	}
 }
 
@@ -43,22 +32,9 @@ func WithTemperature(temp float64) option {
 //
 // Note: It is generally recommended to set either temperature or top_p, but not both.
 func WithTopP(topP float64) option {
-	return func(r *chatRequest) error {
-		if topP < 0.0 || topP > 1.0 {
-			return &sarvamaierrors.ValidationError{
-				Message: "top_p must be between 0.0 and 1.0",
-				Field:   "top_p",
-			}
-		}
+	return func(r *chatRequest) {
 		r.TopP = &topP
-		return nil
 	}
-}
-
-var allowedReasoningEffortValues = map[ReasoningEffort]bool{
-	ReasoningEffortLow:    true,
-	ReasoningEffortMedium: true,
-	ReasoningEffortHigh:   true,
 }
 
 // WithReasoningEffort sets the reasoning effort level for the chat request.
@@ -70,16 +46,9 @@ var allowedReasoningEffortValues = map[ReasoningEffort]bool{
 //   - Medium: Balanced (default)
 //   - High:   Thorough reasoning, may take longer
 func WithReasoningEffort(effort ReasoningEffort) option {
-	return func(r *chatRequest) error {
-		if !allowedReasoningEffortValues[effort] {
-			return &sarvamaierrors.ValidationError{
-				Message: "reasoning_effort must be one of 'low', 'medium', or 'high'",
-				Field:   "reasoning_effort",
-			}
-		}
+	return func(r *chatRequest) {
 		e := string(effort)
 		r.ReasoningEffort = &e
-		return nil
 	}
 }
 
@@ -88,9 +57,8 @@ func WithReasoningEffort(effort ReasoningEffort) option {
 // The maximum length of the model's response in tokens.
 // If not set, the model will use its default token limit.
 func WithMaxTokens(maxTokens uint32) option {
-	return func(r *chatRequest) error {
+	return func(r *chatRequest) {
 		r.MaxTokens = &maxTokens
-		return nil
 	}
 }
 
@@ -99,9 +67,8 @@ func WithMaxTokens(maxTokens uint32) option {
 // The model will stop generating further tokens when any of the specified sequences are generated.
 // This can be used to control the end of the response.
 func WithStop(stop []string) option {
-	return func(r *chatRequest) error {
+	return func(r *chatRequest) {
 		r.Stop = &stop
-		return nil
 	}
 }
 
@@ -113,15 +80,8 @@ func WithStop(stop []string) option {
 // Range: 1 to 128
 // Default: 1
 func WithN(n int) option {
-	return func(r *chatRequest) error {
-		if n < 1 || n > 128 {
-			return &sarvamaierrors.ValidationError{
-				Message: "n must be between 1 and 128",
-				Field:   "n",
-			}
-		}
+	return func(r *chatRequest) {
 		r.N = &n
-		return nil
 	}
 }
 
@@ -133,9 +93,8 @@ func WithN(n int) option {
 //
 // Note: Only effective when temperature > 0.
 func WithSeed(seed int64) option {
-	return func(r *chatRequest) error {
+	return func(r *chatRequest) {
 		r.Seed = &seed
-		return nil
 	}
 }
 
@@ -147,15 +106,8 @@ func WithSeed(seed int64) option {
 // Range: -2.0 to 2.0
 // Default: 0.0
 func WithFrequencyPenalty(penalty float64) option {
-	return func(r *chatRequest) error {
-		if penalty < -2.0 || penalty > 2.0 {
-			return &sarvamaierrors.ValidationError{
-				Message: "frequency_penalty must be between -2.0 and 2.0",
-				Field:   "frequency_penalty",
-			}
-		}
+	return func(r *chatRequest) {
 		r.FrequencyPenalty = &penalty
-		return nil
 	}
 }
 
@@ -167,15 +119,8 @@ func WithFrequencyPenalty(penalty float64) option {
 // Range: -2.0 to 2.0
 // Default: 0.0
 func WithPresencePenalty(penalty float64) option {
-	return func(r *chatRequest) error {
-		if penalty < -2.0 || penalty > 2.0 {
-			return &sarvamaierrors.ValidationError{
-				Message: "presence_penalty must be between -2.0 and 2.0",
-				Field:   "presence_penalty",
-			}
-		}
+	return func(r *chatRequest) {
 		r.PresencePenalty = &penalty
-		return nil
 	}
 }
 
@@ -185,8 +130,7 @@ func WithPresencePenalty(penalty float64) option {
 // more accurate and informative responses.
 // Default: false
 func WithWikiGrounding(wikiGrounding bool) option {
-	return func(r *chatRequest) error {
+	return func(r *chatRequest) {
 		r.WikiGrounding = &wikiGrounding
-		return nil
 	}
 }

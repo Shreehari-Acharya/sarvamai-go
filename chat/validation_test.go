@@ -42,7 +42,10 @@ func TestValidateChatRequest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := validateChatRequest(tt.model, tt.messages)
+			err := validateChatRequest(&chatRequest{
+				Model:    tt.model,
+				Messages: tt.messages,
+			})
 			if tt.wantError == nil {
 				if err != nil {
 					t.Errorf("expected no error, got %v", err)

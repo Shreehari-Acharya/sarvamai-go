@@ -112,13 +112,10 @@ func (c *ChatClient) Completions(
 	}
 
 	for _, opt := range opts {
-
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
-	err := validateChatRequest(req.Model, req.Messages)
+	err := validateChatRequest(req)
 	if err != nil {
 		return nil, err
 	}
@@ -208,12 +205,10 @@ func (c *ChatClient) StreamCompletions(
 	}
 
 	for _, opt := range opts {
-		if err := opt(req); err != nil {
-			return nil, err
-		}
+		opt(req)
 	}
 
-	err := validateChatRequest(req.Model, req.Messages)
+	err := validateChatRequest(req)
 	if err != nil {
 		return nil, err
 	}
