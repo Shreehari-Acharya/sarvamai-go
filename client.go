@@ -7,10 +7,10 @@ import (
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/docintel"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/internal/transport"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/stt"
-	sttjob "github.com/Shreehari-Acharya/sarvam-go-sdk/stt-job"
+	sttjob "github.com/Shreehari-Acharya/sarvam-go-sdk/sttjob"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/text"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/translate"
-	translatejob "github.com/Shreehari-Acharya/sarvam-go-sdk/translate-job"
+	translatejob "github.com/Shreehari-Acharya/sarvam-go-sdk/translatejob"
 	"github.com/Shreehari-Acharya/sarvam-go-sdk/tts"
 )
 

@@ -1,5 +1,5 @@
 // Contains types used across multiple packages in the speech domain.
-// stt, stt-job, translate, translate-job.
+// stt, sttjob, translate, translatejob.
 package speech
 
 import (
