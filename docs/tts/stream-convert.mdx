@@ -1,0 +1,100 @@
+---
+title: StreamConvert (WebSocket)
+description: "`TextToSpeech.StreamConvert` for incremental, low-latency TTS."
+---
+
+## Signature
+
+```go
+func (c *TTSClient) StreamConvert(ctx context.Context, targetLanguage LanguageCode, opts ...streamOption) (*AudioStream, error)
+```
+
+## Options
+
+| Option | Type |
+| --- | --- |
+| `WithStreamModel` | `BulbulV2\|BulbulV3Beta` |
+| `WithStreamSpeaker` | `SpeakerVoice` (required) |
+| `WithStreamSendCompletionEvent` | `bool` |
+| `WithStreamPitch` | `float64` |
+| `WithStreamPace` | `float64` |
+| `WithStreamLoudness` | `float64` |
+| `WithStreamTemperature` | `float64` |
+| `WithStreamSampleRate` | `SpeechSampleRate` |
+| `WithStreamEnablePreprocessing` | `bool` |
+| `WithStreamAudioCodec` | `AudioCodec` |
+| `WithStreamBitrate` | `Bitrate` |
+| `WithMinBufferSize` | `int` (`30..200`) |
+| `WithMaxChunkSize` | `int` (`50..500`) |
+
+## Global validation
+
+1. `target_language_code` must be supported.
+2. `speaker` is required.
+3. `BulbulV3` (non-beta) is rejected for streaming.
+4. speaker must belong to model-specific voice list.
+5. `min_buffer_size` must be `30..200` when set.
+6. `max_chunk_length` must be `50..500` when set.
+
+## Model-specific valid / invalid combinations
+
+| Combination | Result |
+| --- | --- |
+| `BulbulV2` + `WithStreamTemperature(...)` | Validation error |
+| `BulbulV2` + `WithStreamPitch(-0.75..0.75)` | Valid |
+| `BulbulV2` + `WithStreamLoudness(0.3..3.0)` | Valid |
+| `BulbulV2` + `WithStreamPace(0.3..3.0)` | Valid |
+| `BulbulV2` + sample rate in `{8000,16000,22050,24000}` | Valid |
+| `BulbulV3Beta` + `WithStreamPitch(...)` | Validation error |
+| `BulbulV3Beta` + `WithStreamLoudness(...)` | Validation error |
+| `BulbulV3Beta` + `WithStreamTemperature(0.01..1.0)` | Valid |
+| `BulbulV3Beta` + `WithStreamPace(0.5..2.0)` | Valid |
+| `BulbulV3Beta` + sample rate in `{8000,16000,22050,24000}` | Valid |
+
+## Streaming protocol behavior
+
+- SDK sends `send_completion_event=true` by default unless overridden.
+- after socket connect, SDK sends a `config` message.
+- text input is sent via `SendText`, then `Flush`.
+
+## `AudioStream` methods
+
+- `Next() bool`
+- `Current() AudioData`
+- `Err() error`
+- `Close() error`
+- `SendText(string) error`
+- `Flush() error`
+- `Ping() error`
+- `Events() <-chan EventData`
+
+## Example
+
+```go
+stream, err := client.TextToSpeech.StreamConvert(
+    ctx,
+    tts.LanguageHiIN,
+    tts.WithStreamModel(tts.BulbulV2),
+    tts.WithStreamSpeaker(tts.SpeakerAnushka),
+    tts.WithStreamPace(1.1),
+)
+if err != nil {
+    panic(err)
+}
+defer stream.Close()
+
+if err := stream.SendText("Namaste, yeh streaming TTS test hai."); err != nil {
+    panic(err)
+}
+if err := stream.Flush(); err != nil {
+    panic(err)
+}
+
+for stream.Next() {
+    chunk := stream.Current()
+    _ = chunk
+}
+if err := stream.Err(); err != nil {
+    panic(err)
+}
+```

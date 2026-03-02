@@ -1,0 +1,96 @@
+---
+title: Speech-to-Text
+description: Speech-to-text via REST and WebSocket stream.
+---
+
+## Import
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/stt"
+```
+
+## Methods
+
+```go
+func (c *STTClient) Transcribe(ctx context.Context, file io.Reader, opts ...Option) (*TranscribeResponse, error)
+func (c *STTClient) TranscribeStream(ctx context.Context, language LanguageCode, opts ...StreamOption) (*speech.Stream, error)
+```
+
+## REST options (`Transcribe`)
+
+- `WithModel(ModelSaarika|ModelSaaras)`
+- `WithMode(ModeTranscribe|ModeTranslate|ModeVerbatim|ModeTranslit|ModeCodemix)`
+- `WithLanguage(languages.Code)`
+- `WithAudioCodec(speech.InputAudioCodec)`
+
+## Stream options (`TranscribeStream`)
+
+- `WithStreamLanguage(languages.Code)`
+- `WithStreamModel(...)`
+- `WithStreamMode(...)`
+- `WithStreamSampleRate(SampleRate8000|SampleRate16000)`
+- `WithStreamInputAudioCodec(CodecWAV|CodecPCMS16LE|CodecPCML16|CodecPCMRAW)`
+- `WithStreamHighVADSensitivity(bool)`
+- `WithStreamVADSignals(bool)`
+- `WithStreamFlushSignal(bool)`
+
+## Model-specific option compatibility
+
+- `WithMode(...)` and `WithStreamMode(...)` are model-dependent.
+- If model is `ModelSaarika`, setting mode causes validation error (`mode is only supported with saaras:v3 model`).
+- If model is `ModelSaaras`, mode is allowed.
+- If you set mode without explicitly setting model, SDK validates mode using default model spec `saaras:v3` (so mode passes client-side validation).
+- Language compatibility is also model-dependent:
+  - `ModelSaarika` language set: `languages.SaarikaLanguages`
+  - `ModelSaaras` language set: `languages.SaarasLanguages`
+
+## Client-side validation
+
+### `Transcribe`
+
+- `file` is required
+- model must be `saarika:v2.5` or `saaras:v3` when set
+- `mode` is validated via shared speech model rules
+- `language_code` is validated against model-supported language map
+
+### `TranscribeStream`
+
+- model allowed: `saarika:v2.5` or `saaras:v3`
+- sample rate allowed: `8000`, `16000`
+- stream codec allowed: `wav`, `pcm_s16le`, `pcm_l16`, `pcm_raw`
+- mode/language validation applied via shared speech rules
+
+## WebSocket query parameters sent by SDK
+
+`TranscribeStream` maps options to these query keys:
+
+- `language-code`
+- `model`
+- `mode`
+- `sample_rate`
+- `input_audio_codec`
+- `high_vad_sensitivity`
+- `vad_signals`
+- `flush_signal`
+
+## Return type for stream
+
+`TranscribeStream` returns `*speech.Stream` from `shared/speech`. See [`speech-streaming`](./speech-streaming).
+
+## Example (REST)
+
+```go
+audioFile, _ := os.Open("audio.wav")
+defer audioFile.Close()
+
+resp, err := client.SpeechToText.Transcribe(
+    ctx,
+    audioFile,
+    stt.WithModel(stt.ModelSaaras),
+    stt.WithMode(stt.ModeTranslate),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.Transcript)
+```

@@ -1,0 +1,60 @@
+---
+title: Overview
+description: "Speech-to-Text APIs: REST, real-time streaming, and batch jobs."
+---
+
+## Packages
+
+```go
+import (
+    "github.com/Shreehari-Acharya/sarvamai-go/stt"
+    "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+)
+```
+
+## Clients and methods
+
+### `client.SpeechToText` (`stt`)
+
+- [`Transcribe`](./transcribe)
+- [`TranscribeStream`](./transcribe-stream)
+
+### `client.SpeechToTextJob` (`sttjob`)
+
+- [`Initialize`](./job-initialize)
+- [`GetUploadLinks`](./job-get-upload-links)
+- [`Start`](./job-start)
+- [`GetStatus`](./job-get-status)
+- [`GetDownloadLinks`](./job-get-download-links)
+
+## Batch job workflow
+
+1. Call [`Initialize`](./job-initialize) to create a job and set options.
+2. Call [`GetUploadLinks`](./job-get-upload-links) to get presigned upload URLs.
+3. Upload audio files to those URLs.
+4. Call [`Start`](./job-start) to trigger processing.
+5. Poll with [`GetStatus`](./job-get-status) until terminal state.
+6. Call [`GetDownloadLinks`](./job-get-download-links) to fetch output URLs.
+
+## Model and mode rules (SDK validation)
+
+| Rule | Result |
+| --- | --- |
+| `ModelSaaras` + `Mode*` | Valid |
+| `ModelSaarika` + `Mode*` | Validation error |
+| `model` omitted + `Mode*` | Valid in SDK validation (uses `saaras:v3` model spec for mode checks) |
+
+## Language set rules (SDK validation)
+
+| Model context | Allowed language set |
+| --- | --- |
+| `ModelSaarika` | `languages.SaarikaLanguages` |
+| `ModelSaaras` | `languages.SaarasLanguages` |
+| `model` omitted | `languages.SaarasLanguages` (validation default) |
+
+## Other important combination rules
+
+| Combination | Result |
+| --- | --- |
+| `WithNumSpeakers(n)` + `WithDiarization(true)` | Valid |
+| `WithNumSpeakers(n)` without diarization enabled | Validation error |

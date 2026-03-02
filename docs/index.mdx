@@ -1,0 +1,33 @@
+---
+title: Sarvam AI Go SDK
+description: Code-accurate documentation for the Sarvam AI Go SDK packages.
+---
+
+## What this docs set covers
+
+This documentation is generated from the current SDK codebase and is organized package-by-package.
+
+## Services and Reference
+
+- [`client setup`](./client): root client, config, and service handles
+- [`languages`](./languages): language code constants and language sets
+- [`chat`](./chat): chat completions and streaming chat
+- [`text`](./text): translation, transliteration, and language detection
+- [`speech-to-text`](./speech-to-text): speech-to-text (REST, stream, and batch jobs with per-method docs)
+- [`translate`](./translate): speech-to-text-translate (REST + WebSocket stream)
+- [`tts`](./tts): text-to-speech (REST + WebSocket stream)
+- [`translatejob`](./translatejob): batch speech-to-text-translate workflow
+- [`docintel`](./docintel): document intelligence job workflow
+- [`shared/speech`](./speech-streaming): shared stream/event/data types returned by speech streams
+- [`errors and retries`](./errors-and-retries): SDK error types and retry behavior
+- [`examples`](./examples): runnable repository examples mapped to each package
+
+## Import path
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go"
+```
+
+## Source of truth
+
+If you update SDK behavior, update these docs pages in the same PR so docs stay code-accurate.

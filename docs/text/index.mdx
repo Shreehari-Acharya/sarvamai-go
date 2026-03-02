@@ -1,0 +1,30 @@
+---
+title: Overview
+description: "Text translation, transliteration, and language detection APIs."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/text"
+```
+
+## Client
+
+- `client.Text`
+
+## Methods
+
+- [`Translate`](./translate)
+- [`Transliterate`](./transliterate)
+- [`DetectLanguage`](./detect-language)
+
+## Important model behavior (`Translate`)
+
+SDK validation defaults to `sarvam-translate:v1` when model is omitted.
+
+| Model context | Input length limit | Mode support | Output script support |
+| --- | --- | --- | --- |
+| `ModelMayura` | 1000 chars | `formal`, `modern-colloquial`, `classic-colloquial`, `code-mixed` | supported |
+| `ModelSarvamTranslate` | 2000 chars | only `formal` | not supported |
+| model omitted | 2000 chars | validated like `ModelSarvamTranslate` | validated like `ModelSarvamTranslate` |

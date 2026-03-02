@@ -1,0 +1,90 @@
+---
+title: Speech-to-Text Jobs
+description: Batch speech-to-text job workflow.
+---
+
+## Import
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Workflow
+
+1. `Initialize`
+2. `GetUploadLinks`
+3. upload files to presigned URLs
+4. `Start`
+5. poll with `GetStatus`
+6. `GetDownloadLinks`
+
+## Methods
+
+```go
+func (c *SttJobClient) Initialize(ctx context.Context, options ...InitJobOption) (*InitJobTranscribeResponse, error)
+func (c *SttJobClient) GetUploadLinks(ctx context.Context, jobID string, files []string) (*GetUploadLinksResponse, error)
+func (c *SttJobClient) Start(ctx context.Context, jobID string, opts ...StartJobOption) (*JobTranscribeResponse, error)
+func (c *SttJobClient) GetStatus(ctx context.Context, jobID string) (*JobTranscribeResponse, error)
+func (c *SttJobClient) GetDownloadLinks(ctx context.Context, jobID string, files []string) (*GetDownloadLinksResponse, error)
+```
+
+## Initialize options
+
+- `WithLanguage(languages.Code)`
+- `WithModel(speech.Model)` (`saarika:v2.5` or `saaras:v3`)
+- `WithMode(speech.Mode)`
+- `WithTimeStamps(bool)`
+- `WithDiarization(bool)`
+- `WithNumSpeakers(int)`
+- `WithCallback(url string, authToken *string)`
+
+## Start options
+
+- `WithPtuID(int)`
+
+## Model-specific option compatibility
+
+- `WithMode(...)` is model-dependent.
+- If you set `WithModel(sttjob.ModelSaarika)` and also set `WithMode(...)`, SDK validation fails because mode is only supported with `saaras:v3`.
+- If you set `WithModel(sttjob.ModelSaaras)`, `WithMode(...)` is valid.
+- If you set mode without explicitly setting model, SDK validates against default model spec `saaras:v3` (mode is allowed).
+- `WithLanguage(...)` is model-dependent:
+  - `saarika:v2.5` uses `languages.SaarikaLanguages`
+  - `saaras:v3` uses `languages.SaarasLanguages`
+- `WithNumSpeakers(...)` requires `WithDiarization(true)` (dependency check independent of model).
+
+## Client-side validation
+
+- model restricted to `saarika:v2.5` / `saaras:v3` when provided
+- mode validated using shared model mode rules
+- language validated against selected/default model language map
+- `num_speakers` requires `with_diarization == true`
+- callback URL cannot be empty when callback is provided
+- `job_id` required for start/status/download/upload operations
+- `files` list must be non-empty for upload/download link requests
+
+## Response types
+
+- `InitJobTranscribeResponse`
+- `GetUploadLinksResponse`
+- `JobTranscribeResponse`
+- `GetDownloadLinksResponse`
+
+See package types for full fields (`job_state`, counts, `job_details`, container type, etc.).
+
+## Example skeleton
+
+```go
+initResp, err := client.SpeechToTextJob.Initialize(ctx, sttjob.WithModel(sttjob.ModelSaaras))
+if err != nil {
+    panic(err)
+}
+
+uploadResp, err := client.SpeechToTextJob.GetUploadLinks(ctx, initResp.JobID, []string{"audio1.wav"})
+if err != nil {
+    panic(err)
+}
+_ = uploadResp
+
+_, _ = client.SpeechToTextJob.Start(ctx, initResp.JobID)
+```

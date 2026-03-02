@@ -1,0 +1,29 @@
+---
+title: GetStatus
+description: "`DocumentIntelligence.GetStatus` retrieves detailed job progress."
+---
+
+## Signature
+
+```go
+func (c *DocIntelClient) GetStatus(ctx context.Context, jobID string) (*DocIntelJobStatusResponse, error)
+```
+
+## Validation rules
+
+- `jobID` must be non-empty
+
+## Response highlights
+
+| Field | Type |
+| --- | --- |
+| `JobID` | `string` |
+| `JobState` | `JobState` |
+| `TotalFiles` | `int` |
+| `SuccessfulFilesCount` | `int` |
+| `FailedFilesCount` | `int` |
+| `JobDetails` | `[]JobDetail` |
+
+## Typical polling
+
+Poll until `Completed`, `PartiallyCompleted`, or `Failed`.

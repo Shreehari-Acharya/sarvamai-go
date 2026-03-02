@@ -1,0 +1,27 @@
+---
+title: Start
+description: "`SpeechToTextTranslateJob.Start` starts translation processing."
+---
+
+## Signature
+
+```go
+func (c *TranslateJobClient) Start(ctx context.Context, jobID string, opts ...startJobOption) (*JobStatusResponse, error)
+```
+
+## Options
+
+- `WithStartJobPtuId(int)`
+
+## Validation rules
+
+- `jobID` must be non-empty
+
+## Endpoint behavior
+
+- without PTU: `POST /speech-to-text-translate/job/v1/{job_id}/start`
+- with PTU: `POST /speech-to-text-translate/job/v1/{job_id}/start?ptu_id=<id>`
+
+## Next step
+
+Poll with [`GetStatus`](./get-status).

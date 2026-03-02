@@ -1,0 +1,53 @@
+---
+title: Languages
+description: Language code constants and service-specific language sets.
+---
+
+## Import
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/languages"
+```
+
+## Core type
+
+```go
+type Code string
+```
+
+Helpers:
+
+- `func (c Code) String() string`
+- `func (c Code) IsValid() bool` (checks membership in `languages.Languages`)
+
+## Base constants
+
+The package defines constants such as:
+
+- `CodeAuto`, `CodeUnknown`
+- `CodeHiIN`, `CodeEnIN`, `CodeBnIN`, `CodeTaIN`, etc.
+
+## Service language sets
+
+The SDK uses these maps in validation logic:
+
+- `MayuraLanguages`
+- `SarvamTranslateLanguages`
+- `TransliterateLanguages`
+- `SaarikaLanguages`
+- `SaarasLanguages`
+- `TargetLanguages` (TTS target language set)
+- `AllowedDocIntelLanguages`
+
+## Practical use
+
+Use language constants from the package-specific aliases (`text.LanguageHiIN`, `stt.LanguageEnIN`, etc.) where possible.
+
+When building custom validation in your app, you can reference set maps directly:
+
+```go
+if !languages.SaarasLanguages[languages.Code("hi-IN")] {
+    return errors.New("unsupported language for saaras")
+}
+```
+

@@ -1,0 +1,11 @@
+{
+  "title": "Document Intelligence",
+  "pages": [
+    "index",
+    "initialize",
+    "get-upload-links",
+    "start",
+    "get-status",
+    "get-download-links"
+  ]
+}

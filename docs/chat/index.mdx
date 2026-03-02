@@ -1,0 +1,46 @@
+---
+title: Overview
+description: "Chat completions and streaming chat completions."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/chat"
+```
+
+## Client
+
+- `client.Chat`
+
+## Methods
+
+- [`Completions`](./completions)
+- [`StreamCompletions`](./stream-completions)
+
+## Model constants
+
+- `chat.ModelSarvamM`
+
+## Message helpers
+
+- `chat.SystemMessage(string)`
+- `chat.UserMessage(string)`
+- `chat.AssistantMessage(string)`
+
+## Shared validation rules
+
+1. `model` must be non-empty.
+2. `messages` must contain at least one message.
+3. Every message must have non-empty `role` and `content`.
+
+## Streaming type
+
+`StreamCompletions` returns `*ChatStream` with:
+
+- `Next()`
+- `Current()`
+- `Choice()`
+- `Text()`
+- `Err()`
+- `Close()`

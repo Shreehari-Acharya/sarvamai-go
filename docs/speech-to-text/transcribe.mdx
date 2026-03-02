@@ -1,0 +1,77 @@
+---
+title: Transcribe (REST)
+description: "`SpeechToText.Transcribe` for file-based speech recognition."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/stt"
+```
+
+## Signature
+
+```go
+func (c *STTClient) Transcribe(ctx context.Context, file io.Reader, opts ...Option) (*TranscribeResponse, error)
+```
+
+## Required input
+
+- `file` (`io.Reader`) is required.
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithModel` | `ModelSaarika \| ModelSaaras` | If omitted, model is not explicitly sent by SDK. |
+| `WithMode` | `ModeTranscribe \| ModeTranslate \| ModeVerbatim \| ModeTranslit \| ModeCodemix` | Mode support depends on model validation rules. |
+| `WithLanguage` | `languages.Code` | Allowed values depend on selected model (or validation default when omitted). |
+| `WithAudioCodec` | `speech.InputAudioCodec` | SDK does not locally validate codec values for REST transcribe. |
+
+## Model + option compatibility
+
+| Combo | Result |
+| --- | --- |
+| `WithModel(ModelSaaras)` + `WithMode(...)` | Valid |
+| `WithModel(ModelSaarika)` + `WithMode(...)` | Validation error (`mode` only supported with `saaras:v3`) |
+| `WithMode(...)` with model omitted | Valid in SDK validation (mode check uses `saaras:v3` spec) |
+| `WithModel(ModelSaarika)` + `WithLanguage` in `SaarikaLanguages` | Valid |
+| `WithModel(ModelSaarika)` + `WithLanguage` outside `SaarikaLanguages` | Validation error |
+| `WithModel(ModelSaaras)` + `WithLanguage` in `SaarasLanguages` | Valid |
+| `WithModel(ModelSaaras)` + `WithLanguage` outside `SaarasLanguages` | Validation error |
+| `WithLanguage` with model omitted | Valid only when language is in `SaarasLanguages` |
+
+## Validation behavior from SDK
+
+1. `file` must be non-nil.
+2. If `model` is set, it must be `saarika:v2.5` or `saaras:v3`.
+3. Mode is validated via `speech.ValidateMode`.
+4. Language is validated via `speech.ValidateLanguageWithSpec`.
+
+## Response
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `Transcript` | `string` | Main transcription output. |
+| `RequestID` | `*string` | Optional request identifier. |
+| `LanguageCode` | `*string` | Optional detected/selected language code. |
+| `LanguageProbability` | `*float64` | Optional confidence for language detection. |
+| `Timestamps` | `*speech.Timestamps` | Optional word timing metadata. |
+| `DiarizedTranscript` | `*speech.DiarizedTranscript` | Optional diarized output when available. |
+
+## Example
+
+```go
+resp, err := client.SpeechToText.Transcribe(
+    ctx,
+    audioFile,
+    stt.WithModel(stt.ModelSaaras),
+    stt.WithMode(stt.ModeTranslate),
+    stt.WithLanguage(stt.LanguageHiIN),
+    stt.WithAudioCodec(stt.CodecWAV),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.Transcript)
+```

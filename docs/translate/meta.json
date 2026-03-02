@@ -1,0 +1,8 @@
+{
+  "title": "Speech Translate",
+  "pages": [
+    "index",
+    "translate",
+    "translate-stream"
+  ]
+}

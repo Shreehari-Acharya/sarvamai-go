@@ -1,0 +1,14 @@
+{
+  "title": "Speech-to-Text",
+  "pages": [
+    "index",
+    "transcribe",
+    "transcribe-stream",
+    "---Batch Jobs---",
+    "job-initialize",
+    "job-get-upload-links",
+    "job-start",
+    "job-get-status",
+    "job-get-download-links"
+  ]
+}

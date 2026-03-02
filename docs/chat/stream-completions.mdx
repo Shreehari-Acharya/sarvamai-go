@@ -1,0 +1,56 @@
+---
+title: StreamCompletions
+description: "`Chat.StreamCompletions` for SSE-style incremental chat output."
+---
+
+## Signature
+
+```go
+func (c *ChatClient) StreamCompletions(ctx context.Context, model string, messages []ChatMessage, opts ...option) (*ChatStream, error)
+```
+
+## Option behavior
+
+Uses the same option set and validation as [`Completions`](./completions).
+
+## Streaming behavior
+
+1. SDK sets `stream=true` internally before request.
+2. Response is consumed line-by-line from SSE `data:` frames.
+3. `[DONE]` ends iteration.
+4. `Text()` accumulates first-choice delta content.
+
+## `ChatStream` methods
+
+- `Next() bool`
+- `Current() ChatChunk`
+- `Choice() (ChunkChoice, bool)`
+- `Text() string`
+- `Err() error`
+- `Close() error`
+
+## Example
+
+```go
+stream, err := client.Chat.StreamCompletions(
+    ctx,
+    chat.ModelSarvamM,
+    []chat.ChatMessage{
+        chat.UserMessage("Give me a 3-line intro to Sarvam AI."),
+    },
+    chat.WithTopP(0.9),
+)
+if err != nil {
+    panic(err)
+}
+defer stream.Close()
+
+for stream.Next() {
+    if choice, ok := stream.Choice(); ok {
+        fmt.Print(choice.Delta.Content)
+    }
+}
+if err := stream.Err(); err != nil {
+    panic(err)
+}
+```

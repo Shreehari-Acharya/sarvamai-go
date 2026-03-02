@@ -1,0 +1,65 @@
+---
+title: TranslateStream (WebSocket)
+description: "`SpeechToTextTranslate.TranslateStream` for real-time speech translation."
+---
+
+## Signature
+
+```go
+func (c *TranslateClient) TranslateStream(ctx context.Context, opts ...TranslateStreamOption) (*speech.Stream, error)
+```
+
+## Options
+
+| Option | Type | Validation |
+| --- | --- | --- |
+| `WithModelForTranslateStream` | `saaras:v2.5\|saaras:v3` | strict enum |
+| `WithModeForTranslateStream` | `transcribe\|translate\|verbatim\|translit\|codemix` | strict enum |
+| `WithSampleRateForTranslateStream` | `8000\|16000` | strict enum |
+| `WithAudioCodecForTranslateStream` | `wav\|pcm_s16le\|pcm_l16\|pcm_raw` | strict enum |
+| `WithHighVADSensitivityForTranslateStream` | `bool` | no extra validation |
+| `WithVADSignalsForTranslateStream` | `bool` | no extra validation |
+| `WithFlushSignalForTranslateStream` | `bool` | no extra validation |
+
+## Validation behavior
+
+1. `model`, when set, must be `saaras:v2.5` or `saaras:v3`.
+2. `mode`, when set, must be one of the five allowed values.
+3. `sample_rate`, when set, must be `8000` or `16000`.
+4. `input_audio_codec`, when set, must be one of stream codecs.
+
+## Defaults and query params
+
+- stream object uses `16000` sample rate when not provided
+- query keys sent: `model`, `mode`, `sample_rate`, `input_audio_codec`, `high_vad_sensitivity`, `vad_signals`, `flush_signal`
+
+## Example
+
+```go
+stream, err := client.SpeechToTextTranslate.TranslateStream(
+    ctx,
+    translate.WithModelForTranslateStream(translate.ModelSaaras),
+    translate.WithModeForTranslateStream(translate.ModeTranslate),
+    translate.WithSampleRateForTranslateStream(translate.SampleRate16000),
+    translate.WithAudioCodecForTranslateStream(translate.CodecWAV),
+)
+if err != nil {
+    panic(err)
+}
+defer stream.Close()
+
+if err := stream.SendAudio(chunk); err != nil {
+    panic(err)
+}
+if err := stream.Flush(); err != nil {
+    panic(err)
+}
+
+for stream.Next() {
+    resp := stream.Current()
+    _ = resp
+}
+if err := stream.Err(); err != nil {
+    panic(err)
+}
+```

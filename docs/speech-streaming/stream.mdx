@@ -1,0 +1,46 @@
+---
+title: Stream
+description: "`shared/speech.Stream` iterator and messaging protocol."
+---
+
+## Core methods
+
+```go
+func (s *Stream) SendAudio(pcm []byte) error
+func (s *Stream) Flush() error
+func (s *Stream) Next() bool
+func (s *Stream) Current() StreamResponse
+func (s *Stream) Text() string
+func (s *Stream) Err() error
+func (s *Stream) Close() error
+```
+
+## Response envelope
+
+```go
+type StreamResponse struct {
+    Type ResponseType    `json:"type"`
+    Data json.RawMessage `json:"data"`
+}
+```
+
+## `ResponseType` values
+
+- `data`
+- `error`
+- `events`
+
+## Decoding payload
+
+```go
+var d speech.StreamData
+if err := resp.UnmarshalData(&d); err != nil {
+    panic(err)
+}
+```
+
+## Related payload types
+
+- `StreamData`
+- `ErrorData`
+- `EventData`

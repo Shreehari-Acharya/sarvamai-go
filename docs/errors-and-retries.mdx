@@ -1,0 +1,56 @@
+---
+title: Errors and Retries
+description: Validation errors, API errors, and transport retry behavior.
+---
+
+## Client-side validation errors
+
+Validation is returned as:
+
+```go
+type ValidationError struct {
+    Field   string
+    Message string
+}
+```
+
+`Error()` format:
+
+```text
+<field>: <message>
+```
+
+These errors happen before network request is sent.
+
+## API/server errors
+
+Server errors are parsed into:
+
+```go
+type APIError struct {
+    StatusCode int
+    Message    string
+    Code       string
+    RawBody    string
+}
+```
+
+`Error()` includes status code and optional code.
+
+## HTTP retry behavior
+
+For normal JSON requests (`DoRequest`):
+
+- retries on network errors
+- retries on `429` and `5xx`
+- exponential backoff: `1s`, `2s`, `4s`, ... capped at `10s`
+- max attempts controlled by `Config.MaxRetries` (default `3`)
+
+For streaming and multipart:
+
+- `DoStreamRequest`: no retry
+- `DoMultipartRequest`: no automatic retry (reader may not be rewindable)
+
+## Context cancellation
+
+All operations use context-aware requests. Canceling context interrupts in-flight operations. WebSocket connections are also closed on context cancellation.

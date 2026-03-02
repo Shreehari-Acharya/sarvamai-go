@@ -1,0 +1,50 @@
+---
+title: Job GetStatus
+description: "`SpeechToTextJob.GetStatus` checks batch job progress."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Signature
+
+```go
+func (c *SttJobClient) GetStatus(ctx context.Context, jobID string) (*JobTranscribeResponse, error)
+```
+
+## Validation
+
+- `jobID` must be non-empty
+
+## Response highlights
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `JobId` | `string` | Job identifier. |
+| `JobState` | `speech.JobState` | `Accepted`, `Pending`, `Running`, `Completed`, `Failed`. |
+| `TotalFiles` | `*int` | Total files in job (may be nil early). |
+| `SuccessfulFilesCount` | `*int` | Successful file count. |
+| `FailedFilesCount` | `*int` | Failed file count. |
+| `ErrorMessage` | `*string` | Populated on failure. |
+| `JobDetails` | `*[]speech.JobDetail` | Per-file detail records. |
+
+## Typical polling
+
+```go
+for {
+    status, err := client.SpeechToTextJob.GetStatus(ctx, jobID)
+    if err != nil {
+        panic(err)
+    }
+
+    if status.JobState == sttjob.JobStateCompleted || status.JobState == sttjob.JobStateFailed {
+        break
+    }
+    time.Sleep(2 * time.Second)
+}
+```
+
+The SDK itself does not throttle polling; apply your own interval.

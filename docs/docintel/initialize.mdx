@@ -1,0 +1,45 @@
+---
+title: Initialize
+description: "`DocumentIntelligence.Initialize` creates a document-processing job."
+---
+
+## Signature
+
+```go
+func (c *DocIntelClient) Initialize(ctx context.Context, options ...docIntelOption) (*DocIntelInitializeResponse, error)
+```
+
+## Options
+
+| Option | Type | Validation |
+| --- | --- | --- |
+| `WithLanguage` | `languages.Code` | must be in `languages.AllowedDocIntelLanguages` |
+| `WithOutputFormat` | `html\|md\|json` | strict enum |
+| `WithCallback` | `(url string, authToken *string)` | URL must be valid HTTPS |
+
+## Valid / invalid combinations
+
+| Combination | Result |
+| --- | --- |
+| `WithCallback("https://example.com/cb", nil)` | Valid |
+| `WithCallback("http://example.com/cb", nil)` | Validation error |
+| `WithCallback("not-a-url", nil)` | Validation error |
+
+## Validation rules
+
+1. language is optional, but when set must be supported.
+2. output format is optional, but when set must be one of `html`, `md`, `json`.
+3. callback URL must be valid and use `https`.
+
+## Response highlights
+
+| Field | Type |
+| --- | --- |
+| `JobID` | `string` |
+| `StorageContainerType` | `ContainerType` |
+| `JobParameters` | `JobParameters` |
+| `JobState` | `JobState` |
+
+## Next step
+
+Call [`GetUploadLinks`](./get-upload-links).

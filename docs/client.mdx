@@ -1,0 +1,62 @@
+---
+title: Client Setup
+description: Root client configuration and service handles.
+---
+
+## Import
+
+```go
+import sarvamai "github.com/Shreehari-Acharya/sarvamai-go"
+```
+
+## `Config`
+
+```go
+type Config struct {
+    APIKey     string
+    BaseURL    string
+    HTTPClient *http.Client
+    MaxRetries int
+}
+```
+
+## `NewClient`
+
+```go
+func NewClient(cfg sarvamai.Config) (*sarvamai.Client, error)
+```
+
+Behavior:
+
+- `APIKey` is required.
+- Empty `BaseURL` defaults to `https://api.sarvam.ai`.
+- `HTTPClient == nil` defaults to `&http.Client{Timeout: 30 * time.Second}`.
+- `MaxRetries <= 0` defaults to `3`.
+
+## Service handles exposed on `Client`
+
+- `Text` (`*text.TextClient`)
+- `SpeechToText` (`*stt.STTClient`)
+- `SpeechToTextTranslate` (`*translate.TranslateClient`)
+- `SpeechToTextJob` (`*sttjob.SttJobClient`)
+- `SpeechToTextTranslateJob` (`*translatejob.TranslateJobClient`)
+- `TextToSpeech` (`*tts.TTSClient`)
+- `Chat` (`*chat.ChatClient`)
+- `DocumentIntelligence` (`*docintel.DocIntelClient`)
+
+## Example
+
+```go
+client, err := sarvamai.NewClient(sarvamai.Config{
+    APIKey: os.Getenv("SARVAM_API_KEY"),
+})
+if err != nil {
+    panic(err)
+}
+
+resp, err := client.Text.DetectLanguage(context.Background(), "नमस्ते")
+if err != nil {
+    panic(err)
+}
+_ = resp
+```

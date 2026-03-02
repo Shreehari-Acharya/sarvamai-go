@@ -1,0 +1,30 @@
+---
+title: Overview
+description: "TTS synthesis (REST and streaming) with model-specific controls."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/tts"
+```
+
+## Client
+
+- `client.TextToSpeech`
+
+## Methods
+
+- [`Convert`](./convert)
+- [`StreamConvert`](./stream-convert)
+
+## Models
+
+- `BulbulV2`
+- `BulbulV3`
+- `BulbulV3Beta` (streaming-focused)
+
+## Default model behavior
+
+- `Convert`: defaults to `BulbulV3` when model is omitted.
+- `StreamConvert`: defaults to `BulbulV2` when model is omitted.

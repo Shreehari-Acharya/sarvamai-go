@@ -1,0 +1,66 @@
+---
+title: Completions
+description: "`Chat.Completions` for non-streaming chat responses."
+---
+
+## Signature
+
+```go
+func (c *ChatClient) Completions(ctx context.Context, model string, messages []ChatMessage, opts ...option) (*ChatResponse, error)
+```
+
+## Options
+
+| Option | Type | Validation |
+| --- | --- | --- |
+| `WithTemperature` | `float64` | `0.0` to `2.0` |
+| `WithTopP` | `float64` | `0.0` to `1.0` |
+| `WithReasoningEffort` | `low\|medium\|high` | strict enum |
+| `WithMaxTokens` | `uint32` | no client-side range check |
+| `WithStop` | `[]string` | no client-side content check |
+| `WithN` | `int` | `1` to `128` |
+| `WithSeed` | `int64` | no client-side range check |
+| `WithFrequencyPenalty` | `float64` | `-2.0` to `2.0` |
+| `WithPresencePenalty` | `float64` | `-2.0` to `2.0` |
+| `WithWikiGrounding` | `bool` | no extra validation |
+
+## Request validation
+
+- `model` required
+- `messages` required and non-empty
+- each message needs non-empty `role` and `content`
+- all numeric range checks listed in table above
+
+## Response highlights
+
+| Field | Type |
+| --- | --- |
+| `ID` | `string` |
+| `Choices` | `[]Choice` |
+| `Created` | `int64` |
+| `Model` | `string` |
+| `Usage` | `Usage` |
+
+## Example
+
+```go
+resp, err := client.Chat.Completions(
+    ctx,
+    chat.ModelSarvamM,
+    []chat.ChatMessage{
+        chat.SystemMessage("You are concise."),
+        chat.UserMessage("Summarize Go interfaces in 2 lines."),
+    },
+    chat.WithTemperature(0.4),
+    chat.WithMaxTokens(120),
+)
+if err != nil {
+    panic(err)
+}
+
+text, err := resp.FirstChoice()
+if err != nil {
+    panic(err)
+}
+fmt.Println(text)
+```

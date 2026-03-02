@@ -1,0 +1,34 @@
+---
+title: DetectLanguage
+description: "`Text.DetectLanguage` for language and script identification."
+---
+
+## Signature
+
+```go
+func (c *TextClient) DetectLanguage(ctx context.Context, input string) (*DetectLanguageResponse, error)
+```
+
+## Validation rules
+
+- `input` must be non-empty
+- max length is `1000` characters
+
+## Response
+
+| Field | Type |
+| --- | --- |
+| `RequestID` | `*string` |
+| `LanguageCode` | `*string` |
+| `ScriptCode` | `*ScriptCode` |
+
+## Example
+
+```go
+resp, err := client.Text.DetectLanguage(ctx, "नमस्ते")
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(*resp.LanguageCode, *resp.ScriptCode)
+```

@@ -1,0 +1,59 @@
+---
+title: Job GetUploadLinks
+description: "`SpeechToTextJob.GetUploadLinks` generates presigned upload URLs."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Signature
+
+```go
+func (c *SttJobClient) GetUploadLinks(ctx context.Context, jobID string, files []string) (*GetUploadLinksResponse, error)
+```
+
+## Required fields
+
+- `jobID` must be non-empty
+- `files` must contain at least one file name
+
+## Validation
+
+| Input | Result |
+| --- | --- |
+| valid `jobID` + non-empty `files` | Valid |
+| empty `jobID` | Validation error |
+| empty `files` | Validation error |
+
+## Response highlights
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `JobId` | `string` | Same job ID provided in request. |
+| `JobState` | `speech.JobState` | Current job state. |
+| `UploadUrls` | `map[string]UploadUrl` | Per-file presigned upload URL map. |
+| `StorageContainerType` | `speech.ContainerType` | Backing storage type. |
+
+## Example
+
+```go
+resp, err := client.SpeechToTextJob.GetUploadLinks(
+    ctx,
+    jobID,
+    []string{"sample-1.wav", "sample-2.wav"},
+)
+if err != nil {
+    panic(err)
+}
+
+for fileName, v := range resp.UploadUrls {
+    fmt.Println(fileName, v.FileUrl)
+}
+```
+
+## Next step
+
+Upload your audio files to returned URLs, then call [`Start`](./job-start).

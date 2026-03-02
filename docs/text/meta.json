@@ -1,0 +1,9 @@
+{
+  "title": "Text",
+  "pages": [
+    "index",
+    "translate",
+    "transliterate",
+    "detect-language"
+  ]
+}

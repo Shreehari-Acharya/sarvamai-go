@@ -1,0 +1,49 @@
+---
+title: Transliterate
+description: "`Text.Transliterate` for script conversion while preserving pronunciation."
+---
+
+## Signature
+
+```go
+func (c *TextClient) Transliterate(ctx context.Context, input string, sourceLang LanguageCode, targetLang LanguageCode, options ...transliterationOption) (*TransliterateResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithNumeralsFormatTransliteration` | `international\|native` | no extra client-side enum validation |
+| `WithSpokenFormNumeralsLanguage` | `english\|native` | no extra client-side enum validation |
+| `WithSpokenForm` | `bool` | controls spoken-form behavior server-side |
+
+## Validation rules
+
+1. `input` must be non-empty.
+2. Max input length is `1000` characters.
+3. `source_language_code` and `target_language_code` must be in `languages.TransliterateLanguages`.
+
+## Response
+
+| Field | Type |
+| --- | --- |
+| `RequestID` | `*string` |
+| `TransliteratedText` | `string` |
+| `SourceLanguageCode` | `languages.Code` |
+
+## Example
+
+```go
+resp, err := client.Text.Transliterate(
+    ctx,
+    "namaste doston",
+    text.LanguageEnIN,
+    text.LanguageHiIN,
+    text.WithSpokenForm(true),
+    text.WithSpokenFormNumeralsLanguage(text.SpokenFormNumeralsNative),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.TransliteratedText)
+```

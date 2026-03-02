@@ -1,0 +1,77 @@
+---
+title: Job Initialize
+description: "`SpeechToTextJob.Initialize` creates a new batch STT job."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Signature
+
+```go
+func (c *SttJobClient) Initialize(ctx context.Context, options ...InitJobOption) (*InitJobTranscribeResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithLanguage` | `languages.Code` | Language validation depends on selected model or validation default when omitted. |
+| `WithModel` | `ModelSaarika \| ModelSaaras` | If omitted, model is not explicitly sent by SDK. |
+| `WithMode` | `Mode*` | Mode validation depends on model rules. |
+| `WithTimeStamps` | `bool` | Enables timestamp output in job results. |
+| `WithDiarization` | `bool` | Enables diarization processing. |
+| `WithNumSpeakers` | `int` | Requires `WithDiarization(true)`. |
+| `WithCallback` | `(url string, authToken *string)` | URL must be non-empty if callback is provided. |
+
+## Valid / invalid combos
+
+| Combo | Result |
+| --- | --- |
+| `WithModel(ModelSaaras)` + `WithMode(...)` | Valid |
+| `WithModel(ModelSaarika)` + `WithMode(...)` | Validation error |
+| `WithMode(...)` with model omitted | Valid in SDK validation (mode check uses `saaras:v3` spec) |
+| `WithNumSpeakers(2)` + `WithDiarization(true)` | Valid |
+| `WithNumSpeakers(2)` without diarization | Validation error |
+| `WithCallback("", nil)` | Validation error |
+
+## Validation rules
+
+1. If `model` is set, it must be `saarika:v2.5` or `saaras:v3`.
+2. Mode uses shared model-aware validation.
+3. Language uses shared model-aware validation.
+4. `num_speakers` requires diarization enabled.
+5. Callback URL cannot be empty when callback object is present.
+
+## Response highlights
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `JobID` | `string` | Required for all subsequent job calls. |
+| `StorageContainerType` | `speech.ContainerType` | Storage provider for uploads/downloads. |
+| `JobState` | `speech.JobState` | Initial state after job creation. |
+
+## Example
+
+```go
+resp, err := client.SpeechToTextJob.Initialize(
+    ctx,
+    sttjob.WithModel(sttjob.ModelSaaras),
+    sttjob.WithMode(sttjob.ModeTranscribe),
+    sttjob.WithLanguage(sttjob.LanguageHiIN),
+    sttjob.WithTimeStamps(true),
+    sttjob.WithDiarization(true),
+    sttjob.WithNumSpeakers(2),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.JobID)
+```
+
+## Next step
+
+After `Initialize`, call [`GetUploadLinks`](./job-get-upload-links).

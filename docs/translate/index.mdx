@@ -1,0 +1,25 @@
+---
+title: Overview
+description: "Speech-to-text translation APIs (REST and WebSocket)."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/translate"
+```
+
+## Client
+
+- `client.SpeechToTextTranslate`
+
+## Methods
+
+- [`Translate`](./translate)
+- [`TranslateStream`](./translate-stream)
+
+## Important model notes
+
+1. `Translate` (REST) only validates that `file` is present.
+2. `translate.WithModel(...)` always overwrites model to `saaras:v2.5` inside SDK.
+3. `TranslateStream` allows model `saaras:v2.5` or `saaras:v3`.

@@ -1,0 +1,28 @@
+---
+title: GetUploadLinks
+description: "`SpeechToTextTranslateJob.GetUploadLinks` returns presigned upload URLs."
+---
+
+## Signature
+
+```go
+func (c *TranslateJobClient) GetUploadLinks(ctx context.Context, jobID string, files []string, opts ...getUploadLinksOption) (*GetUploadLinksResponse, error)
+```
+
+## Options
+
+- `WithGetUploadLinksPtuId(int)`
+
+## Validation rules
+
+- `jobID` must be non-empty
+- `files` must contain at least one element
+
+## Endpoint behavior
+
+- without PTU: `POST /speech-to-text-translate/job/v1/upload-files`
+- with PTU: `POST /speech-to-text-translate/job/v1/upload-files?ptu_id=<id>`
+
+## Next step
+
+Upload files, then call [`Start`](./start).

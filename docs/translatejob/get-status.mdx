@@ -1,0 +1,30 @@
+---
+title: GetStatus
+description: "`SpeechToTextTranslateJob.GetStatus` fetches current job state."
+---
+
+## Signature
+
+```go
+func (c *TranslateJobClient) GetStatus(ctx context.Context, jobID string) (*JobStatusResponse, error)
+```
+
+## Validation rules
+
+- `jobID` must be non-empty
+
+## Response highlights
+
+| Field | Type |
+| --- | --- |
+| `JobID` | `string` |
+| `JobState` | `speech.JobState` |
+| `TotalFiles` | `*int` |
+| `SuccessfulFilesCount` | `*int` |
+| `FailedFilesCount` | `*int` |
+| `ErrorMessage` | `*string` |
+| `JobDetails` | `[]speech.JobDetail` |
+
+## Polling
+
+SDK does not apply interval throttling. Add your own sleep/backoff between calls.

@@ -1,0 +1,49 @@
+---
+title: Job Start
+description: "`SpeechToTextJob.Start` starts processing uploaded files."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Signature
+
+```go
+func (c *SttJobClient) Start(ctx context.Context, jobID string, opts ...StartJobOption) (*JobTranscribeResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithPtuID` | `int` | Optional PTU ID; SDK appends `?ptu_id=<value>` to start endpoint. |
+
+## Validation
+
+- `jobID` must be non-empty
+
+## Notes
+
+- SDK sends `POST /speech-to-text/job/v1/{job_id}/start`
+- if PTU is set, SDK appends `?ptu_id=<value>`
+
+## Example
+
+```go
+resp, err := client.SpeechToTextJob.Start(
+    ctx,
+    jobID,
+    sttjob.WithPtuID(12345),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.JobState)
+```
+
+## Next step
+
+Poll status with [`GetStatus`](./job-get-status).

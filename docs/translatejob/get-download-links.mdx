@@ -1,0 +1,30 @@
+---
+title: GetDownloadLinks
+description: "`SpeechToTextTranslateJob.GetDownloadLinks` returns presigned output URLs."
+---
+
+## Signature
+
+```go
+func (c *TranslateJobClient) GetDownloadLinks(ctx context.Context, jobID string, files []string, opts ...getDownloadLinksOption) (*GetDownloadLinksResponse, error)
+```
+
+## Options
+
+- `WithGetDownloadLinksPtuId(int)`
+
+## Validation rules
+
+- `jobID` must be non-empty
+- `files` must contain at least one element
+
+## Endpoint behavior
+
+- without PTU: `POST /speech-to-text-translate/job/v1/download-files`
+- with PTU: `POST /speech-to-text-translate/job/v1/download-files?ptu_id=<id>`
+
+## Recommended sequence
+
+1. ensure status is terminal via `GetStatus`
+2. collect file names/IDs required
+3. call `GetDownloadLinks`

@@ -1,0 +1,73 @@
+---
+title: Convert (REST)
+description: "`TextToSpeech.Convert` for file-style TTS generation."
+---
+
+## Signature
+
+```go
+func (c *TTSClient) Convert(ctx context.Context, text string, targetLanguage LanguageCode, opts ...option) (*ConvertResponse, error)
+```
+
+## Options
+
+| Option | Type |
+| --- | --- |
+| `WithModel` | `BulbulV2\|BulbulV3` |
+| `WithSpeakerVoice` | `SpeakerVoice` |
+| `WithPitch` | `float64` |
+| `WithPace` | `float64` |
+| `WithLoudness` | `float64` |
+| `WithSpeechSampleRate` | `SpeechSampleRate` |
+| `WithOutputAudioCodec` | `AudioCodec` |
+| `WithEnablePreprocessing` | `bool` |
+| `WithTemperature` | `float64` |
+
+## Global validation
+
+1. `target_language_code` must be in `languages.TargetLanguages`.
+2. text length:
+   - `BulbulV3`: `1..2500`
+   - `BulbulV2`: `1..1500`
+3. speaker voice must exist in model-specific allowed voice list.
+
+## Model-specific valid / invalid combinations
+
+| Combination | Result |
+| --- | --- |
+| `BulbulV3` + `WithPitch(...)` | Validation error |
+| `BulbulV3` + `WithLoudness(...)` | Validation error |
+| `BulbulV3` + `WithEnablePreprocessing(...)` | Validation error |
+| `BulbulV3` + `WithPace(0.5..2.0)` | Valid |
+| `BulbulV3` + `WithTemperature(0.01..2.0)` | Valid |
+| `BulbulV3` + sample rate in `{8000,16000,22050,24000,32000,44100,48000}` | Valid |
+| `BulbulV2` + `WithTemperature(...)` | Validation error |
+| `BulbulV2` + `WithPitch(-0.75..0.75)` | Valid |
+| `BulbulV2` + `WithLoudness(0.3..3.0)` | Valid |
+| `BulbulV2` + `WithPace(0.3..3.0)` | Valid |
+| `BulbulV2` + sample rate in `{8000,16000,22050,24000}` | Valid |
+
+## Response
+
+| Field | Type |
+| --- | --- |
+| `RequestId` | `string` |
+| `Audios` | `[]string` (base64 audio payloads) |
+
+## Example
+
+```go
+resp, err := client.TextToSpeech.Convert(
+    ctx,
+    "Hello from Sarvam AI Go SDK",
+    tts.LanguageEnIN,
+    tts.WithModel(tts.BulbulV3),
+    tts.WithSpeakerVoice(tts.SpeakerShubh),
+    tts.WithTemperature(0.7),
+    tts.WithOutputAudioCodec(tts.AudioCodecMP3),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(len(resp.Audios))
+```

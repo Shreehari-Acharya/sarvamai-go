@@ -1,0 +1,19 @@
+{
+  "title": "Sarvam AI Go SDK",
+  "pages": [
+    "index",
+    "getting-started",
+    "examples",
+    "client",
+    "languages",
+    "chat",
+    "text",
+    "speech-to-text",
+    "translate",
+    "tts",
+    "translatejob",
+    "docintel",
+    "speech-streaming",
+    "errors-and-retries"
+  ]
+}

@@ -1,0 +1,48 @@
+---
+title: Translate (REST)
+description: "`SpeechToTextTranslate.Translate` for file-based speech translation."
+---
+
+## Signature
+
+```go
+func (c *TranslateClient) Translate(ctx context.Context, file io.Reader, opts ...TranslateOption) (*TranslateResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithPrompt` | `string` | prompt guidance text |
+| `WithModel` | `speech.Model` | SDK force-sets to `saaras:v2.5` regardless of input |
+| `WithAudioCodec` | `speech.InputAudioCodec` | no client-side enum validation |
+
+## Validation rules
+
+- `file` must be non-nil
+- no other client-side validation in REST path
+
+## Response
+
+| Field | Type |
+| --- | --- |
+| `RequestID` | `*string` |
+| `Transcript` | `string` |
+| `LanguageCode` | `*languages.Code` |
+| `DiarizedTranscript` | `*speech.DiarizedTranscript` |
+| `LanguageProbability` | `*float64` |
+
+## Example
+
+```go
+resp, err := client.SpeechToTextTranslate.Translate(
+    ctx,
+    audioFile,
+    translate.WithPrompt("customer support call"),
+    translate.WithModel(translate.ModelSaaras), // internally set to saaras:v2.5
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.Transcript)
+```

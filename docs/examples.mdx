@@ -1,0 +1,35 @@
+---
+title: Examples
+description: Runnable examples mapped to each SDK package and workflow.
+---
+
+## How to run examples
+
+From repository root:
+
+```bash
+export SARVAM_API_KEY="<your-api-key>"
+go run ./examples/chat-completion
+```
+
+## Example map
+
+| Use case | Example path | Related package docs |
+| --- | --- | --- |
+| Chat completions + stream | `examples/chat-completion/main.go` | [`chat`](./chat) |
+| Text translation | `examples/translation/main.go` | [`text`](./text) |
+| Text transliteration | `examples/transliteration/main.go` | [`text`](./text) |
+| Language detection | `examples/language-detection/main.go` | [`text`](./text) |
+| STT REST | `examples/speech-to-text/main.go` | [`speech-to-text / Transcribe`](./speech-to-text/transcribe) |
+| STT WebSocket stream | `examples/speech-to-text-ws/main.go` | [`speech-to-text / TranscribeStream`](./speech-to-text/transcribe-stream), [`speech-streaming`](./speech-streaming) |
+| STT translate REST | `examples/stt-translate/main.go` | [`translate`](./translate) |
+| STT translate stream | `examples/stt-translate-ws/main.go` | [`translate`](./translate), [`speech-streaming`](./speech-streaming) |
+| TTS REST | `examples/text-to-speech/main.go` | [`tts`](./tts) |
+| TTS stream | `examples/text-to-speech-ws/main.go` | [`tts`](./tts) |
+| Document intelligence | `examples/document-intelligence/main.go` | [`docintel`](./docintel) |
+
+## Notes while adapting examples
+
+- Use your own audio/document paths; example paths are relative to repo root.
+- Streaming examples rely on `Flush()` to finalize output.
+- For job APIs (`sttjob`, `translatejob`), use this docs site’s workflow pages even though repository examples currently focus on non-job flows.

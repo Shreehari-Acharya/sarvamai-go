@@ -1,0 +1,35 @@
+---
+title: Overview
+description: "Batch speech-translation job workflow."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/translatejob"
+```
+
+## Client
+
+- `client.SpeechToTextTranslateJob`
+
+## Methods
+
+- [`Initialize`](./initialize)
+- [`GetUploadLinks`](./get-upload-links)
+- [`Start`](./start)
+- [`GetStatus`](./get-status)
+- [`GetDownloadLinks`](./get-download-links)
+
+## Workflow
+
+1. Initialize job.
+2. Fetch upload links.
+3. Upload files.
+4. Start job.
+5. Poll status.
+6. Fetch download links.
+
+## Important SDK validation note
+
+Validation in this package is intentionally minimal. SDK checks only required IDs/files and callback URL presence, but does not enforce model or diarization combinations client-side.

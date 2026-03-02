@@ -1,0 +1,67 @@
+---
+title: Translate
+description: "`Text.Translate` for text-to-text translation."
+---
+
+## Signature
+
+```go
+func (c *TextClient) Translate(ctx context.Context, input string, sourceLang LanguageCode, targetLang LanguageCode, options ...translateOption) (*TranslateResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithSpeakerGender` | `GenderMale\|GenderFemale` | no extra client-side validation |
+| `WithMode` | `TranslateMode` | model-dependent validation |
+| `WithModel` | `ModelMayura\|ModelSarvamTranslate` | controls validation profile |
+| `WithOutputScript` | `OutputScript*` | only valid for `ModelMayura` |
+| `WithNumeralsFormat` | `international\|native` | no extra client-side enum validation |
+
+## Valid / invalid combinations
+
+| Combination | Result |
+| --- | --- |
+| `ModelMayura` + `ModeModernColloquial` | Valid |
+| `ModelSarvamTranslate` + `ModeFormal` | Valid |
+| `ModelSarvamTranslate` + any non-`formal` mode | Validation error |
+| `ModelMayura` + `OutputScriptRoman` | Valid |
+| `ModelSarvamTranslate` + any `WithOutputScript` | Validation error |
+| model omitted + non-`formal` mode | Validation error |
+| model omitted + `WithOutputScript(...)` | Validation error |
+
+## Validation rules
+
+1. `input` must be non-empty.
+2. Input max length:
+   - `1000` for `ModelMayura`
+   - `2000` for `ModelSarvamTranslate` (and when model is omitted)
+3. `source_language_code` and `target_language_code` must be valid for selected model language set.
+4. Mode and output script follow model rules in table above.
+
+## Response
+
+| Field | Type |
+| --- | --- |
+| `RequestID` | `*string` |
+| `TranslatedText` | `string` |
+| `SourceLanguageCode` | `languages.Code` |
+
+## Example
+
+```go
+resp, err := client.Text.Translate(
+    ctx,
+    "Namaste, aap kaise ho?",
+    text.LanguageEnIN,
+    text.LanguageHiIN,
+    text.WithModel(text.ModelMayura),
+    text.WithMode(text.ModeFormal),
+    text.WithOutputScript(text.OutputScriptFullyNative),
+)
+if err != nil {
+    panic(err)
+}
+fmt.Println(resp.TranslatedText)
+```

@@ -1,0 +1,24 @@
+---
+title: GetUploadLinks
+description: "`DocumentIntelligence.GetUploadLinks` returns presigned upload URLs."
+---
+
+## Signature
+
+```go
+func (c *DocIntelClient) GetUploadLinks(ctx context.Context, jobID string, filename string) (*DocIntelGetUploadLinksResponse, error)
+```
+
+## Validation rules
+
+- `jobID` must be non-empty
+- `filename` must be non-empty
+- file extension must be `.pdf` or `.zip`
+
+## Request behavior
+
+SDK sends one filename as `files: [filename]`.
+
+## Next step
+
+Upload the file, then call [`Start`](./start).

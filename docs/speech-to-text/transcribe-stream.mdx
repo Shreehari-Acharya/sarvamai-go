@@ -1,0 +1,102 @@
+---
+title: TranscribeStream (WebSocket)
+description: "`SpeechToText.TranscribeStream` for real-time transcription."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/stt"
+```
+
+## Signature
+
+```go
+func (c *STTClient) TranscribeStream(ctx context.Context, language LanguageCode, opts ...StreamOption) (*speech.Stream, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithStreamLanguage` | `languages.Code` | Overrides the `language` argument when set. |
+| `WithStreamModel` | `ModelSaarika \| ModelSaaras` | If omitted, model is not explicitly sent by SDK. |
+| `WithStreamMode` | `ModeTranscribe \| ModeTranslate \| ModeVerbatim \| ModeTranslit \| ModeCodemix` | Mode support depends on model validation rules. |
+| `WithStreamSampleRate` | `SampleRate8000 \| SampleRate16000` | SDK validation allows only these two values. |
+| `WithStreamInputAudioCodec` | `CodecWAV \| CodecPCMS16LE \| CodecPCML16 \| CodecPCMRAW` | SDK validation rejects other codecs for streaming. |
+| `WithStreamHighVADSensitivity` | `bool` | Enables higher VAD sensitivity. |
+| `WithStreamVADSignals` | `bool` | Enables VAD signal events in stream responses. |
+| `WithStreamFlushSignal` | `bool` | Enables server flush signal behavior. |
+
+## Model + option compatibility
+
+| Combo | Result |
+| --- | --- |
+| `WithStreamModel(ModelSaaras)` + `WithStreamMode(...)` | Valid |
+| `WithStreamModel(ModelSaarika)` + `WithStreamMode(...)` | Validation error |
+| `WithStreamMode(...)` with model omitted | Valid in SDK validation (mode check uses `saaras:v3` spec) |
+| `WithStreamSampleRate(8000 or 16000)` | Valid |
+| `WithStreamSampleRate(22050/24000/etc)` | Validation error |
+| `WithStreamInputAudioCodec(wav/pcm_s16le/pcm_l16/pcm_raw)` | Valid |
+| `WithStreamInputAudioCodec(mp3/flac/etc)` | Validation error |
+
+## Default behavior
+
+1. If language resolves to empty, SDK sets it to `unknown` before validation.
+2. If sample rate is not set, stream object is created with `16000`.
+
+## WebSocket query keys sent by SDK
+
+- `language-code`
+- `model`
+- `mode`
+- `sample_rate`
+- `input_audio_codec`
+- `high_vad_sensitivity`
+- `vad_signals`
+- `flush_signal`
+
+## Stream usage
+
+Returned type is `*speech.Stream`.
+
+Common flow:
+
+1. create stream
+2. send audio via `SendAudio`
+3. call `Flush`
+4. iterate with `Next()/Current()`
+5. check `Err()` and call `Close()`
+
+## Example
+
+```go
+stream, err := client.SpeechToText.TranscribeStream(
+    ctx,
+    stt.LanguageUnknown,
+    stt.WithStreamModel(stt.ModelSaaras),
+    stt.WithStreamMode(stt.ModeTranscribe),
+    stt.WithStreamSampleRate(stt.SampleRate16000),
+    stt.WithStreamInputAudioCodec(stt.CodecWAV),
+)
+if err != nil {
+    panic(err)
+}
+defer stream.Close()
+
+// Send PCM chunks and flush when done.
+if err := stream.SendAudio(chunk1); err != nil {
+    panic(err)
+}
+if err := stream.Flush(); err != nil {
+    panic(err)
+}
+
+for stream.Next() {
+    resp := stream.Current()
+    _ = resp
+}
+if err := stream.Err(); err != nil {
+    panic(err)
+}
+```

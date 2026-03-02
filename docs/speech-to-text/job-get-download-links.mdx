@@ -1,0 +1,57 @@
+---
+title: Job GetDownloadLinks
+description: "`SpeechToTextJob.GetDownloadLinks` returns presigned output URLs."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/sttjob"
+```
+
+## Signature
+
+```go
+func (c *SttJobClient) GetDownloadLinks(ctx context.Context, jobID string, files []string) (*GetDownloadLinksResponse, error)
+```
+
+## Required fields
+
+- `jobID` must be non-empty
+- `files` must be non-empty
+
+## Validation
+
+| Input | Result |
+| --- | --- |
+| valid `jobID` + non-empty `files` | Valid |
+| empty `jobID` | Validation error |
+| empty `files` | Validation error |
+
+## Response highlights
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `JobId` | `string` | Job identifier. |
+| `JobState` | `speech.JobState` | Current job state. |
+| `UploadUrls` | `map[string]DownloadUrl` | Map from file ID to presigned output URL payload. |
+| `StorageContainerType` | `speech.ContainerType` | Backing storage type. |
+
+## Recommended sequence
+
+1. call `GetStatus` and ensure job is complete
+2. collect file IDs from status response
+3. request download links for those file IDs
+
+## Example
+
+```go
+resp, err := client.SpeechToTextJob.GetDownloadLinks(ctx, jobID, fileIDs)
+if err != nil {
+    panic(err)
+}
+
+for fileID, link := range resp.UploadUrls {
+    fmt.Println(fileID, link.FileUrl)
+}
+```

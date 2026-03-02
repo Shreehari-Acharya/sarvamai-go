@@ -1,0 +1,43 @@
+---
+title: Initialize
+description: "`SpeechToTextTranslateJob.Initialize` creates a batch translation job."
+---
+
+## Signature
+
+```go
+func (c *TranslateJobClient) Initialize(ctx context.Context, opts ...initJobOption) (*InitJobResponse, error)
+```
+
+## Options
+
+| Option | Type | Notes |
+| --- | --- | --- |
+| `WithPrompt` | `string` | prompt/context |
+| `WithModel` | `speech.Model` | set model in job parameters |
+| `WithDiarization` | `bool` | diarization toggle |
+| `WithNumSpeakers` | `int` | expected speaker count |
+| `WithPtuId` | `int` | appends PTU query param |
+| `WithCallback` | `(url string, authToken *string)` | callback for completion |
+
+## Valid / invalid combinations (SDK-level)
+
+| Combination | Result |
+| --- | --- |
+| `WithCallback("", nil)` | Validation error |
+| callback omitted | Valid |
+| `WithNumSpeakers(...)` without diarization | Allowed by SDK validation |
+
+## Validation rules
+
+- if callback is provided, `callback_url` must be non-empty
+- no SDK-side model/mode/num-speakers consistency validation
+
+## Endpoint behavior
+
+- without PTU: `POST /speech-to-text-translate/job/v1`
+- with PTU: `POST /speech-to-text-translate/job/v1/?ptu_id=<id>`
+
+## Next step
+
+Call [`GetUploadLinks`](./get-upload-links).

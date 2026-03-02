@@ -1,0 +1,22 @@
+---
+title: Start
+description: "`DocumentIntelligence.Start` begins processing an uploaded document."
+---
+
+## Signature
+
+```go
+func (c *DocIntelClient) Start(ctx context.Context, jobID string) (*DocIntelJobStatusResponse, error)
+```
+
+## Validation rules
+
+- `jobID` must be non-empty (trim-space aware)
+
+## Endpoint
+
+- `POST /doc-digitization/job/v1/{job_id}/start`
+
+## Next step
+
+Poll with [`GetStatus`](./get-status).

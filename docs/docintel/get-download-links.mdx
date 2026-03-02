@@ -1,0 +1,31 @@
+---
+title: GetDownloadLinks
+description: "`DocumentIntelligence.GetDownloadLinks` returns presigned output URLs."
+---
+
+## Signature
+
+```go
+func (c *DocIntelClient) GetDownloadLinks(ctx context.Context, jobID string) (*DocIntelGetDownloadLinksResponse, error)
+```
+
+## Validation rules
+
+- `jobID` must be non-empty
+
+## Response highlights
+
+| Field | Type |
+| --- | --- |
+| `JobID` | `string` |
+| `JobState` | `JobState` |
+| `StorageContainerType` | `ContainerType` |
+| `DownloadURLs` | `map[string]FileSignedURLDetails` |
+| `ErrorCode` | `*string` |
+| `ErrorMessage` | `*string` |
+
+## Recommended sequence
+
+1. ensure processing is complete (or partially complete) via `GetStatus`
+2. call `GetDownloadLinks`
+3. fetch output files from returned presigned URLs

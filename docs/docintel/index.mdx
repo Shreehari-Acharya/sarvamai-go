@@ -1,0 +1,31 @@
+---
+title: Overview
+description: "Batch document intelligence workflow for extraction and digitization."
+---
+
+## Package
+
+```go
+import "github.com/Shreehari-Acharya/sarvamai-go/docintel"
+```
+
+## Client
+
+- `client.DocumentIntelligence`
+
+## Methods
+
+- [`Initialize`](./initialize)
+- [`GetUploadLinks`](./get-upload-links)
+- [`Start`](./start)
+- [`GetStatus`](./get-status)
+- [`GetDownloadLinks`](./get-download-links)
+
+## Workflow
+
+1. Initialize job with language/output format and optional callback.
+2. Get upload link for one `.pdf` or `.zip` file.
+3. Upload file.
+4. Start processing.
+5. Poll status.
+6. Fetch download links.

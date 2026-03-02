@@ -1,0 +1,94 @@
+---
+title: Getting Started
+description: Install the SDK, create a client, and call your first API.
+---
+
+## Install
+
+```bash
+go get github.com/Shreehari-Acharya/sarvamai-go
+```
+
+## Create a client
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+
+	sarvamai "github.com/Shreehari-Acharya/sarvamai-go"
+)
+
+func main() {
+	client, err := sarvamai.NewClient(sarvamai.Config{
+		APIKey: os.Getenv("SARVAM_API_KEY"),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("client initialized", client != nil)
+}
+```
+
+## Config defaults
+
+When not set explicitly:
+
+- `BaseURL`: `https://api.sarvam.ai`
+- `HTTPClient.Timeout`: `30s`
+- `MaxRetries`: `3`
+
+## First call example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	sarvamai "github.com/Shreehari-Acharya/sarvamai-go"
+	"github.com/Shreehari-Acharya/sarvamai-go/chat"
+)
+
+func main() {
+	ctx := context.Background()
+
+	client, err := sarvamai.NewClient(sarvamai.Config{APIKey: os.Getenv("SARVAM_API_KEY")})
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := client.Chat.Completions(
+		ctx,
+		chat.ModelSarvamM,
+		[]chat.ChatMessage{
+			chat.SystemMessage("You are helpful."),
+			chat.UserMessage("What is the capital of India?"),
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	text, err := resp.FirstChoice()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(text)
+}
+```
+
+## Next steps
+
+Read package docs in this order if you are new:
+
+1. `client`
+2. `languages`
+3. `text` / `chat`
+4. `speech-to-text` / `translate` / `tts`
+5. `translatejob` / `docintel`
