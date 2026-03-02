@@ -1,0 +1,26 @@
+{
+  "name": "sarvamai-go-docs",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "fumadocs-mdx && next dev --webpack",
+    "build": "fumadocs-mdx && next build --webpack",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "fumadocs-core": "latest",
+    "fumadocs-mdx": "latest",
+    "fumadocs-ui": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
