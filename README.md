@@ -6,6 +6,8 @@
 
 An idiomatic Go client for the Sarvam AI API.
 
+Documentation: https://sarvamai-go-docs.shreehari.dev/docs
+
 Note: This is an unofficial, community-maintained SDK. It is not affiliated with or endorsed by Sarvam AI.
 
 ## Features
@@ -88,9 +90,9 @@ for stream.Next() {
 - **Timeout Management**: REST requests use a default 30-second timeout, configurable via the client config.
 - **Resource Cleanup**: WebSocket streams respect context cancellation to ensure underlying connections and goroutines are properly terminated.
 
-## Documentation And Examples
+## Examples
 
-Full documentation and detailed examples are available in the [examples/](./examples) directory.
+Examples are available in the [examples/](./examples) directory.
 
 ## Contributing
 
