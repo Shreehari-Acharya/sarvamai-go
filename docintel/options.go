@@ -45,7 +45,7 @@ func WithOutputFormat(format OutputFormat) docIntelOption {
 //   - te-IN: Telugu
 //   - ur-IN: Urdu
 //   - as-IN: Assamese
-//   - bodo-IN: Bodo
+//   - brx-IN: Bodo
 //   - doi-IN: Dogri
 //   - ks-IN: Kashmiri
 //   - kok-IN: Konkani

@@ -124,7 +124,7 @@ var AllowedDocIntelLanguages = map[Code]bool{
 	"te-IN":   true, // Telugu
 	"ur-IN":   true, // Urdu
 	"as-IN":   true, // Assamese
-	"bodo-IN": true, // Bodo
+	"brx-IN": true, // Bodo
 	"doi-IN":  true, // Dogri
 	"ks-IN":   true, // Kashmiri
 	"kok-IN":  true, // Konkani
