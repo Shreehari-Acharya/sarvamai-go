@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <DocsLayout
       tree={source.pageTree}
       nav={{
-        title: 'Sarvam AI Go SDK',
+        title: 'sarvamai-go SDK Documentation',
         url: '/docs',
         transparentMode: 'top',
         children: (

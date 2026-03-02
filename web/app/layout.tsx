@@ -4,8 +4,8 @@ import 'fumadocs-ui/style.css';
 import './global.css';
 
 export const metadata: Metadata = {
-  title: 'Sarvam AI Go SDK Docs',
-  description: 'Documentation website for the Sarvam AI Go SDK.',
+  title: 'sarvamai-go SDK Docs',
+  description: 'Documentation website for the sarvamai-go SDK.',
 };
 
 export default function RootLayout({
